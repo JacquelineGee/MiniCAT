@@ -1,0 +1,50 @@
+# MiniCAT Detector Configuration
+
+# 输入路径
+miniapp:
+  source_dir: ""  # 微信小程序源码目录，运行时指定
+
+# CodeQL配置
+codeql:
+  cli_path: "codeql"  # CodeQL CLI路径，默认使用系统PATH中的codeql
+  database_dir: "codeql-db"  # CodeQL数据库目录
+  queries_dir: "codeql/queries"  # CodeQL查询文件目录
+  language: "javascript"  # 分析语言
+
+# WXML转换器配置
+transformer:
+  script_path: "transformer/convert.js"  # WXML转换脚本路径
+  node_path: "node"  # Node.js路径
+
+# 输出配置
+output:
+  dir: "output"  # 输出目录
+  report_format: "json"  # 报告格式：json, markdown, both
+  save_intermediate: true  # 是否保存中间结果
+
+# 检测配置
+detection:
+  route_apis:
+    - "wx.navigateTo"
+    - "wx.redirectTo"
+    - "wx.reLaunch"
+    - "wx.switchTab"
+    - "wx.navigateBack"
+
+  state_check_apis:
+    - "wx.checkSession"
+    - "wx.getStorage"
+    - "wx.getStorageSync"
+    - "wx.getUserInfo"
+
+  # 风险判断阈值
+  risk_threshold:
+    has_modifiable_params: true  # 是否存在可修改参数
+    has_user_trigger: true  # 是否恢复用户触发路径
+    no_state_check: true  # 目标页面无状态检查
+    shareable: true  # 来源页面支持分享
+
+# 日志配置
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "output/detector.log"

@@ -1,0 +1,4 @@
+# MiniCAT Detector Python Dependencies
+
+# YAML parser for config file
+pyyaml>=6.0
