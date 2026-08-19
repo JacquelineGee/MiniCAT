@@ -1,400 +1,573 @@
 """
-main.py — MiniCAT Detector 主入口。
+main.py - MiniCAT 主检测入口
 
-用法:
-    python main.py --source <小程序源码目录> [--output <输出目录>] [--config <配置文件>]
+使用 CodeQL 污点追踪检测微信小程序 CPRF 漏洞
 """
 
-import argparse
-import json
-import logging
 import os
 import sys
+import logging
+import argparse
+import subprocess
+import csv
+import json
+from pathlib import Path
+from typing import Dict, List, Tuple
 
-import yaml
-
-from preprocessing.app_parser import AppParser
-from preprocessing.page_index import PageIndexBuilder
-from preprocessing.wxml_converter import WxmlConverter
-from codeql.database import CodeQLDatabase
-from codeql.run_query import QueryRunner
-from analyzer.route_analyzer import RouteAnalyzer
-from analyzer.event_recovery import EventRecovery
-from analyzer.trigger_linker import TriggerLinker
-from analyzer.state_checker import StateChecker
-from analyzer.share_checker import ShareChecker
-from analyzer.attack_path_builder import AttackPathBuilder
-from analyzer.report_generator import ReportGenerator
-
-
-def setup_logging(level: str, log_file: str) -> None:
-    os.makedirs(os.path.dirname(log_file), exist_ok=True)
-    logging.basicConfig(
-        level=getattr(logging, level.upper(), logging.INFO),
-        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-        handlers=[
-            logging.StreamHandler(sys.stdout),
-            logging.FileHandler(log_file, encoding="utf-8"),
-        ],
-    )
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('detector.log', encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 
-def load_config(config_path: str) -> dict:
-    with open(config_path, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
+class MiniCATDetector:
+    """MiniCAT 污点追踪检测器"""
+
+    def __init__(self, source_dir: str, output_dir: str, quiet: bool = False):
+        self.source_dir = os.path.abspath(source_dir)
+        self.output_dir = os.path.abspath(output_dir)
+        self.db_path = None
+        self.app_id = os.path.basename(self.source_dir)
+        self.quiet = quiet  # 静默模式，不输出格式化摘要
+
+        # unpacked 目录（在当前工作目录下）
+        self.unpacked_base = os.path.join(os.getcwd(), 'unpacked')
+        os.makedirs(self.unpacked_base, exist_ok=True)
+
+        # 创建输出目录
+        os.makedirs(self.output_dir, exist_ok=True)
+
+        # CodeQL 查询文件路径
+        self.query_path = os.path.join(
+            os.path.dirname(__file__),
+            'codeql', 'queries', 'MiniCATTaint.ql'
+        )
+
+    def check_unpacked(self) -> Tuple[bool, str]:
+        """
+        检查源码是否已解包
+
+        返回: (是否已解包, 源码目录路径)
+        """
+        # Step 1: 优先检查 unpacked/wx_id/ 是否已存在
+        unpacked_target = os.path.join(self.unpacked_base, self.app_id)
+        if os.path.exists(unpacked_target) and os.path.exists(os.path.join(unpacked_target, 'app.json')):
+            logger.info(f"在 unpacked/ 目录中找到已解包源码: {unpacked_target}")
+            self.source_dir = unpacked_target
+            return True, unpacked_target
+
+        # Step 2: 如果 source_dir 本身包含 app.json，说明已解包
+        app_json = os.path.join(self.source_dir, 'app.json')
+        if os.path.exists(app_json):
+            logger.info(f"检测到已解包的小程序: {self.source_dir}")
+            return True, self.source_dir
+
+        # Step 3: 检查是否有 .wxapkg 文件
+        wxapkg_files = list(Path(self.source_dir).rglob('*.wxapkg'))
+        if wxapkg_files:
+            logger.info(f"检测到 {len(wxapkg_files)} 个 .wxapkg 文件，开始解包...")
+            unpacked_dir = self._unpack_wxapkg(wxapkg_files[0])
+            if unpacked_dir and os.path.exists(os.path.join(unpacked_dir, 'app.json')):
+                self.source_dir = unpacked_dir
+                return True, unpacked_dir
+            else:
+                logger.error("解包失败")
+                return False, ""
+
+        logger.error(f"未找到 app.json 或 .wxapkg 文件: {self.source_dir}")
+        return False, ""
+
+    def _unpack_wxapkg(self, wxapkg_path: Path) -> str:
+        """
+        解包 .wxapkg 文件到 unpacked/wx_id/ 目录
+
+        返回: 解包后的目录路径
+        """
+        try:
+            import shutil
+
+            # 目标解包目录: unpacked/wx_id/
+            unpacked_target = os.path.join(self.unpacked_base, self.app_id)
+
+            # 如果目标目录已存在，先删除
+            if os.path.exists(unpacked_target):
+                shutil.rmtree(unpacked_target)
+
+            # 使用 wedecode 解包到临时目录
+            temp_output = os.path.join(os.path.dirname(str(wxapkg_path)), '_temp_unpack')
+            if os.path.exists(temp_output):
+                shutil.rmtree(temp_output)
+            os.makedirs(temp_output, exist_ok=True)
+
+            # wedecode 命令格式: wedecode <wxapkg> --out <dir> --clear
+            cmd = f'wedecode "{str(wxapkg_path)}" --out "{temp_output}" --clear'
+
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=120,
+                shell=True,
+                encoding='utf-8',
+                errors='ignore'
+            )
+
+            if result.returncode == 0:
+                # 查找包含 app.json 的目录
+                unpacked_dir = self._find_app_json_dir(temp_output)
+                if unpacked_dir:
+                    # 移动到 unpacked/wx_id/
+                    shutil.move(unpacked_dir, unpacked_target)
+
+                    # 清理临时目录
+                    if os.path.exists(temp_output):
+                        shutil.rmtree(temp_output)
+
+                    logger.info(f"解包成功: {unpacked_target}")
+                    return unpacked_target
+
+            logger.error(f"解包失败: {result.stderr}")
+            return ""
+        except Exception as e:
+            logger.error(f"解包异常: {e}")
+            return ""
+
+    def _find_app_json_dir(self, root_dir: str) -> str:
+        """在解包目录中查找包含 app.json 的目录"""
+        # 检查根目录
+        if os.path.exists(os.path.join(root_dir, "app.json")):
+            return root_dir
+
+        # 检查子目录（最多2层）
+        for item in os.listdir(root_dir):
+            item_path = os.path.join(root_dir, item)
+            if os.path.isdir(item_path):
+                if os.path.exists(os.path.join(item_path, "app.json")):
+                    return item_path
+
+                # 递归查找
+                for subitem in os.listdir(item_path):
+                    subitem_path = os.path.join(item_path, subitem)
+                    if os.path.isdir(subitem_path):
+                        if os.path.exists(os.path.join(subitem_path, "app.json")):
+                            return subitem_path
+
+        return ""
+
+    def rename_wxml_to_html(self) -> int:
+        """将所有 .wxml 文件重命名为 .html，返回转换数量"""
+        logger.info("重命名 .wxml 文件为 .html...")
+        count = 0
+        for root, dirs, files in os.walk(self.source_dir):
+            for file in files:
+                if file.endswith('.wxml'):
+                    wxml_path = os.path.join(root, file)
+                    html_path = wxml_path.replace('.wxml', '.html')
+                    if not os.path.exists(html_path):
+                        os.rename(wxml_path, html_path)
+                        count += 1
+        logger.info(f"重命名了 {count} 个 .wxml 文件")
+        return count
+
+    def create_codeql_database(self):
+        """创建 CodeQL 数据库"""
+        self.db_path = os.path.join(self.output_dir, f"{self.app_id}_db")
+
+        if os.path.exists(self.db_path):
+            logger.info(f"CodeQL 数据库已存在: {self.db_path}")
+            return True
+
+        logger.info("创建 CodeQL 数据库...")
+        cmd = [
+            'codeql', 'database', 'create',
+            self.db_path,
+            '--language=javascript',
+            '--threads=4'
+        ]
+
+        try:
+            result = subprocess.run(
+                cmd,
+                cwd=self.source_dir,
+                capture_output=True,
+                text=True,
+                timeout=600
+            )
+
+            if result.returncode == 0:
+                logger.info("CodeQL 数据库创建成功")
+                return True
+            else:
+                logger.error(f"CodeQL 数据库创建失败: {result.stderr}")
+                return False
+        except Exception as e:
+            logger.error(f"创建 CodeQL 数据库时出错: {e}")
+            return False
+
+    def run_taint_query(self):
+        """运行污点追踪查询"""
+        logger.info("运行污点追踪查询...")
+
+        if not os.path.exists(self.query_path):
+            logger.error(f"查询文件不存在: {self.query_path}")
+            return False
+
+        bqrs_path = os.path.join(self.output_dir, f"{self.app_id}_taint.bqrs")
+
+        cmd = [
+            'codeql', 'query', 'run',
+            '--database', self.db_path,
+            '--output', bqrs_path,
+            self.query_path
+        ]
+
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+
+            if result.returncode == 0:
+                logger.info("污点追踪查询完成")
+                return bqrs_path
+            else:
+                logger.error(f"查询失败: {result.stderr}")
+                return None
+        except Exception as e:
+            logger.error(f"运行查询时出错: {e}")
+            return None
+
+    def decode_bqrs(self, bqrs_path: str, csv_path: str, predicate: str):
+        """解码 BQRS 文件为 CSV"""
+        logger.info(f"解码 {predicate} 结果...")
+
+        cmd = [
+            'codeql', 'bqrs', 'decode',
+            '--format=csv',
+            f'--result-set={predicate}',
+            '--output', csv_path,
+            bqrs_path
+        ]
+
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+
+            if result.returncode == 0:
+                logger.info(f"解码成功: {csv_path}")
+                return True
+            else:
+                logger.error(f"解码失败: {result.stderr}")
+                return False
+        except Exception as e:
+            logger.error(f"解码时出错: {e}")
+            return False
+
+    def check_share_method(self, file_path: str) -> bool:
+        """检查文件是否包含 onShareAppMessage 方法"""
+        try:
+            with open(file_path, 'rb') as f:
+                content = f.read()
+                return b'onShareAppMessage' in content
+        except Exception as e:
+            logger.debug(f"读取文件失败 {file_path}: {e}")
+            return False
+
+    def process_results(self, csv_path: str) -> Tuple[List[Dict], List[Dict]]:
+        """
+        处理查询结果
+
+        返回: (所有数据流, 可利用的漏洞)
+        """
+        logger.info("处理查询结果...")
+
+        all_flows = []
+        vulnerabilities = []
+
+        try:
+            with open(csv_path, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    sink_loc = row.get('sink_loc', '')
+                    source_loc = row.get('source_loc', '')
+                    source_func = row.get('source_func', '')
+                    block_name = row.get('block_name', '')
+
+                    # 从 sink_loc 提取文件路径
+                    if '|' in sink_loc:
+                        csv_file_path = sink_loc.split('|')[0]
+
+                        # 将 CSV 中的路径映射到实际的 source_dir
+                        # CSV 路径可能是旧的临时路径，需要转换为相对路径再映射
+                        relative_path = None
+
+                        # 尝试提取相对路径
+                        for part in ['_temp_unpack/', '_temp_unpack\\',
+                                     'unpacked/' + self.app_id + '/',
+                                     'unpacked\\' + self.app_id + '\\']:
+                            if part in csv_file_path:
+                                relative_path = csv_file_path.split(part, 1)[1]
+                                break
+
+                        # 如果无法提取相对路径，尝试直接使用文件名在 source_dir 中查找
+                        if relative_path:
+                            actual_file_path = os.path.join(self.source_dir, relative_path)
+                        else:
+                            actual_file_path = csv_file_path
+
+                        flow_data = {
+                            'file': csv_file_path,  # 保留原始路径用于报告
+                            'sink': sink_loc,
+                            'source': source_loc,
+                            'function': source_func,
+                            'block': block_name
+                        }
+
+                        all_flows.append(flow_data)
+
+                        # 检查是否有 onShareAppMessage（使用实际路径）
+                        if self.check_share_method(actual_file_path):
+                            flow_data['has_share'] = True
+                            vulnerabilities.append(flow_data)
+                            logger.info(f"发现漏洞: {os.path.basename(actual_file_path)} (函数: {source_func})")
+
+        except Exception as e:
+            logger.error(f"处理结果时出错: {e}")
+
+        return all_flows, vulnerabilities
+
+    def generate_report(self, all_flows: List[Dict], vulnerabilities: List[Dict]):
+        """生成检测报告"""
+        logger.info("生成检测报告...")
+
+        report_path = os.path.join(self.output_dir, 'detection_report.md')
+
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write(f"# MiniCAT 检测报告\n\n")
+            f.write(f"## 小程序信息\n\n")
+            f.write(f"- **AppID**: {self.app_id}\n")
+            f.write(f"- **源码目录**: {self.source_dir}\n")
+            f.write(f"- **检测时间**: {self._get_timestamp()}\n\n")
+
+            f.write(f"## 检测结果\n\n")
+            f.write(f"- **数据流总数**: {len(all_flows)}\n")
+            f.write(f"- **可利用漏洞**: {len(vulnerabilities)}\n\n")
+
+            if vulnerabilities:
+                f.write(f"### 漏洞列表\n\n")
+                for idx, vuln in enumerate(vulnerabilities, 1):
+                    f.write(f"#### 漏洞 #{idx}\n\n")
+                    f.write(f"- **文件**: `{os.path.basename(vuln['file'])}`\n")
+                    f.write(f"- **函数**: `{vuln['function']}`\n")
+                    f.write(f"- **Source**: `{vuln['source']}`\n")
+                    f.write(f"- **Sink**: `{vuln['sink']}`\n")
+                    f.write(f"- **可分享**: ✓\n\n")
+
+            # 统计信息
+            f.write(f"## 统计信息\n\n")
+
+            # 函数分布
+            func_dist = {}
+            for flow in all_flows:
+                func = flow['function']
+                func_dist[func] = func_dist.get(func, 0) + 1
+
+            f.write(f"### 函数分布\n\n")
+            for func, count in sorted(func_dist.items(), key=lambda x: x[1], reverse=True):
+                f.write(f"- `{func}`: {count}\n")
+            f.write("\n")
+
+            # 文件分布
+            file_dist = {}
+            for flow in all_flows:
+                file = os.path.basename(flow['file'])
+                file_dist[file] = file_dist.get(file, 0) + 1
+
+            f.write(f"### 文件分布\n\n")
+            for file, count in sorted(file_dist.items(), key=lambda x: x[1], reverse=True):
+                f.write(f"- `{file}`: {count}\n")
+            f.write("\n")
+
+        logger.info(f"报告已生成: {report_path}")
+
+    def _get_timestamp(self):
+        """获取当前时间戳"""
+        from datetime import datetime
+        return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    def count_pages(self) -> int:
+        """统计页面数量（.js 文件）"""
+        count = 0
+        for root, dirs, files in os.walk(self.source_dir):
+            for f in files:
+                if f.endswith('.js'):
+                    count += 1
+        return count
+
+    def count_share_pages(self) -> Tuple[int, int]:
+        """统计可分享页面数，返回 (可分享数, 总页面数)"""
+        total = 0
+        shareable = 0
+        for root, dirs, files in os.walk(self.source_dir):
+            for f in files:
+                if f.endswith('.js'):
+                    total += 1
+                    file_path = os.path.join(root, f)
+                    if self.check_share_method(file_path):
+                        shareable += 1
+        return shareable, total
+
+    def detect(self):
+        """执行完整检测流程"""
+        logger.info("="*60)
+        logger.info(f"MiniCAT 检测器启动")
+        logger.info("="*60)
+
+        # Step 0: 检查是否需要解包
+        is_unpacked, unpacked_dir = self.check_unpacked()
+        if not is_unpacked:
+            logger.error("检测终止：源码未解包")
+            return False
+
+        logger.info(f"检测目标: {self.app_id}")
+        logger.info(f"源码目录: {self.source_dir}")
+
+        # Step 1: 重命名 wxml 为 html
+        html_count = self.rename_wxml_to_html()
+
+        # Step 2: 创建 CodeQL 数据库
+        if not self.create_codeql_database():
+            return False
+
+        # Step 3: 运行污点追踪查询
+        bqrs_path = self.run_taint_query()
+        if not bqrs_path:
+            return False
+
+        # Step 4: 解码结果 (两个谓词: pure_get_func 和 get_func)
+        aux_csv = os.path.join(self.output_dir, f"{self.app_id}_aux.csv")
+        main_csv = os.path.join(self.output_dir, f"{self.app_id}_main.csv")
+
+        if not self.decode_bqrs(bqrs_path, aux_csv, 'pure_get_func'):
+            return False
+        if not self.decode_bqrs(bqrs_path, main_csv, 'get_func'):
+            return False
+
+        # Step 5: 处理结果 (使用 aux_csv,因为它的函数名更准确)
+        all_flows, vulnerabilities = self.process_results(aux_csv)
+
+        # 保存 JSON 结果
+        flows_file = os.path.join(self.output_dir, f"{self.app_id}_all_flows.json")
+        with open(flows_file, 'w', encoding='utf-8') as f:
+            json.dump(all_flows, f, indent=2, ensure_ascii=False)
+
+        vuln_file = os.path.join(self.output_dir, f"{self.app_id}_vulnerabilities.json")
+        with open(vuln_file, 'w', encoding='utf-8') as f:
+            json.dump(vulnerabilities, f, indent=2, ensure_ascii=False)
+
+        # Step 6: 生成报告
+        self.generate_report(all_flows, vulnerabilities)
+
+        # Step 7: 统计分享功能
+        shareable, total_pages = self.count_share_pages()
+
+        # 函数分布
+        func_dist = {}
+        for flow in all_flows:
+            func = flow['function']
+            func_dist[func] = func_dist.get(func, 0) + 1
+
+        # 文件分布
+        file_dist = {}
+        for flow in all_flows:
+            fname = os.path.basename(flow['file'])
+            file_dist[fname] = file_dist.get(fname, 0) + 1
+
+        # 打印格式化结果（非静默模式）
+        if not self.quiet:
+            self._print_summary(
+                html_count=html_count,
+                all_flows=all_flows,
+                vulnerabilities=vulnerabilities,
+                total_pages=total_pages,
+                shareable=shareable,
+                func_dist=func_dist,
+                file_dist=file_dist
+            )
+
+        return True
+
+    def _print_summary(self, html_count, all_flows, vulnerabilities,
+                       total_pages, shareable, func_dist, file_dist):
+        """打印格式化的检测结果摘要"""
+        sep = "=" * 60
+        report_path = os.path.join(self.output_dir, 'detection_report.md')
+        aux_csv = os.path.join(self.output_dir, f"{self.app_id}_aux.csv")
+        main_csv = os.path.join(self.output_dir, f"{self.app_id}_main.csv")
+        flows_file = os.path.join(self.output_dir, f"{self.app_id}_all_flows.json")
+        vuln_file = os.path.join(self.output_dir, f"{self.app_id}_vulnerabilities.json")
+        bqrs_file = os.path.join(self.output_dir, f"{self.app_id}_taint.bqrs")
+
+        print(f"\n{sep}")
+        print(f"{'MiniCAT Detector 检测完成':^60}")
+        print(f"{sep}\n")
+
+        print("输出文件:")
+        print(f"  - CodeQL 数据库: {self.db_path}")
+        print(f"  - 污点查询结果(BQRS): {bqrs_file}")
+        print(f"  - 数据流(pure_get_func): {aux_csv}")
+        print(f"  - 数据流(get_func): {main_csv}")
+        print(f"  - 所有数据流(JSON): {flows_file}")
+        print(f"  - 漏洞列表(JSON): {vuln_file}")
+        print(f"  - [报告] 检测报告: {report_path}")
+
+        print(f"\n检测统计:")
+        print(f"  - 检测目标: {self.app_id}")
+        print(f"  - 总页面数(JS文件): {total_pages}")
+        print(f"  - HTML 已转换: {html_count} 个")
+        print(f"  - 污点数据流: {len(all_flows)} 条")
+        print(f"  - 可利用漏洞(有onShareAppMessage): {len(vulnerabilities)} 条")
+
+        print(f"\n漏洞发现:")
+        print(f"  - [HIGH] 可利用 CPRF 漏洞(可分享): {len(vulnerabilities)} 条")
+        print(f"  - [总计] 总数据流: {len(all_flows)} 条")
+
+        if vulnerabilities:
+            print(f"\n漏洞详情:")
+            for idx, vuln in enumerate(vulnerabilities, 1):
+                print(f"  #{idx} 文件: {os.path.basename(vuln['file'])}, "
+                      f"函数: {vuln['function']}")
+
+        print(f"\n函数分布:")
+        for func, count in sorted(func_dist.items(), key=lambda x: x[1], reverse=True):
+            print(f"  - {func}: {count}")
+
+        print(f"\n文件分布:")
+        for fname, count in sorted(file_dist.items(), key=lambda x: x[1], reverse=True):
+            print(f"  - {fname}: {count}")
+
+        print(f"\n分享功能统计:")
+        print(f"  - 总页面数: {total_pages}")
+        print(f"  - 可分享页面: {shareable}")
+        print(f"  - 不可分享页面: {total_pages - shareable}")
+
+        print(f"\n{sep}")
 
 
-def save_json(data: dict | list, path: str) -> None:
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+def main():
+    parser = argparse.ArgumentParser(description='MiniCAT - 微信小程序 CPRF 检测工具')
+    parser.add_argument('--source', required=True, help='小程序源码目录或包含 .wxapkg 文件的目录')
+    parser.add_argument('--output', default='output', help='输出目录 (默认: output)')
 
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description="MiniCAT Detector — 微信小程序 CPRF 静态检测器")
-    parser.add_argument("--source", required=True, help="小程序源码根目录（含 app.json）")
-    parser.add_argument("--output", default="output", help="输出目录（默认 output/）")
-    parser.add_argument("--config", default="config/config.yaml", help="配置文件路径")
     args = parser.parse_args()
 
-    cfg = load_config(args.config)
+    detector = MiniCATDetector(args.source, args.output)
+    success = detector.detect()
 
-    log_cfg = cfg.get("logging", {})
-    log_file = os.path.join(args.output, "detector.log")
-    setup_logging(log_cfg.get("level", "INFO"), log_file)
-
-    logger = logging.getLogger("main")
-    logger.info("=== MiniCAT Detector 启动 ===")
-    logger.info("源码目录: %s", os.path.abspath(args.source))
-
-    # ------------------------------------------------------------------ #
-    # Step 1: app.json 解析                                                #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 1] 解析 app.json ...")
-    app_parser = AppParser(args.source)
-    pages = app_parser.parse()
-    logger.info("发现页面: %d 个", len(pages))
-
-    # ------------------------------------------------------------------ #
-    # Step 1: 页面索引构建                                                 #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 1] 构建页面索引 ...")
-    builder = PageIndexBuilder(args.source)
-    page_index = builder.build(pages)
-
-    index_output = os.path.join(args.output, "page_index.json")
-    save_json(page_index, index_output)
-    logger.info("页面索引已保存: %s", index_output)
-
-    # ------------------------------------------------------------------ #
-    # Step 2: WXML 转换                                                  #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 2] 转换 WXML → HTML ...")
-    transformer_cfg = cfg.get("transformer", {})
-    converter = WxmlConverter(
-        miniapp_root=args.source,
-        transformer_script=transformer_cfg.get("script_path", "transformer/convert.js"),
-        node_path=transformer_cfg.get("node_path", "node"),
-    )
-    page_index = converter.convert_all(page_index)
-
-    # 保存更新后的 page_index（包含 HTML 路径）
-    save_json(page_index, index_output)
-    logger.info("页面索引已更新（含 HTML）: %s", index_output)
-
-    # ------------------------------------------------------------------ #
-    # Step 3: 创建 CodeQL 数据库                                          #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 3] 创建 CodeQL 数据库 ...")
-    codeql_cfg = cfg.get("codeql", {})
-    db_dir = os.path.join(args.output, codeql_cfg.get("database_dir", "codeql-db"))
-
-    codeql_db = CodeQLDatabase(
-        source_dir=args.source,
-        db_dir=db_dir,
-        codeql_path=codeql_cfg.get("cli_path", "codeql"),
-    )
-
-    db_created = codeql_db.create(overwrite=False)
-    if not db_created:
-        logger.error("CodeQL 数据库创建失败，终止")
-        sys.exit(1)
-
-    logger.info("CodeQL 数据库路径: %s", db_dir)
-
-    # ------------------------------------------------------------------ #
-    # Step 4: 执行 RouteAPI 查询                                          #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 4] 执行 RouteAPI 查询 ...")
-    query_runner = QueryRunner(db_dir, codeql_cfg.get("cli_path", "codeql"))
-    route_query_path = os.path.join("codeql", "queries", "RouteAPI.ql")
-
-    route_results = query_runner.run(route_query_path)
-    logger.info("RouteAPI 查询返回 %d 条结果", len(route_results))
-
-    # 分析路由结果
-    route_analyzer = RouteAnalyzer()
-    routes = route_analyzer.analyze(route_results)
-
-    # 保存路由分析结果
-    routes_output = os.path.join(args.output, "routes.json")
-    save_json(routes, routes_output)
-    logger.info("路由分析结果已保存: %s", routes_output)
-
-    # ------------------------------------------------------------------ #
-    # Step 5: Event Recovery (反向污点分析)                               #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 5] 执行 CallGraph 查询并恢复事件链 ...")
-    call_graph_query_path = os.path.join("codeql", "queries", "CallGraph.ql")
-
-    call_graph_results = query_runner.run(call_graph_query_path)
-    logger.info("CallGraph 查询返回 %d 条结果", len(call_graph_results))
-
-    # 恢复事件链
-    event_recovery = EventRecovery()
-    event_chains = event_recovery.recover(routes, call_graph_results)
-
-    # 保存事件链结果
-    events_output = os.path.join(args.output, "event_chains.json")
-    save_json(event_chains, events_output)
-    logger.info("事件链已保存: %s", events_output)
-
-    # ------------------------------------------------------------------ #
-    # Step 6: WXML 触发器分析 + 关联                                      #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 6] 执行 WXMLTrigger 查询并关联触发链 ...")
-    wxml_query_path = os.path.join("codeql", "queries", "WXMLTrigger.ql")
-
-    wxml_triggers = query_runner.run(wxml_query_path)
-    logger.info("WXMLTrigger 查询返回 %d 条结果", len(wxml_triggers))
-
-    # 关联 WXML 触发器、事件链、路由
-    trigger_linker = TriggerLinker()
-    trigger_chains = trigger_linker.link(wxml_triggers, event_chains, routes)
-
-    # 保存触发链
-    triggers_output = os.path.join(args.output, "trigger_chains.json")
-    save_json(trigger_chains, triggers_output)
-    logger.info("触发链已保存: %s", triggers_output)
-
-    # ------------------------------------------------------------------ #
-    # Step 7: 用户状态检查分析                                            #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 7] 执行 UserState 查询并分析用户状态检查 ...")
-    user_state_query_path = os.path.join("codeql", "queries", "UserState.ql")
-
-    user_state_results = query_runner.run(user_state_query_path)
-    logger.info("UserState 查询返回 %d 条结果", len(user_state_results))
-
-    # 分析用户状态检查
-    state_checker = StateChecker()
-    state_checks = state_checker.analyze(user_state_results)
-
-    # 保存状态检查结果
-    state_output = os.path.join(args.output, "user_state_checks.json")
-    save_json(state_checks, state_output)
-    logger.info("用户状态检查已保存: %s", state_output)
-
-    # 标记触发链中缺少用户验证的路由
-    vulnerable_chains = []
-    for chain in trigger_chains:
-        route_target = chain.get("route_target")
-        if route_target and not state_checker.check_page_has_user_state(route_target):
-            vulnerable_chain = chain.copy()
-            vulnerable_chain["missing_user_check"] = True
-            vulnerable_chains.append(vulnerable_chain)
-
-    logger.info("发现 %d 条触发链的目标页面缺少用户状态检查", len(vulnerable_chains))
-
-    # 保存潜在漏洞触发链
-    vulnerable_output = os.path.join(args.output, "vulnerable_chains.json")
-    save_json(vulnerable_chains, vulnerable_output)
-    logger.info("潜在漏洞触发链已保存: %s", vulnerable_output)
-
-    # 输出统计信息
-    stats = state_checker.get_statistics()
-    logger.info("用户状态检查统计: %s", stats)
-
-    # ------------------------------------------------------------------ #
-    # Step 8: 分享功能检查分析                                            #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 8] 执行 ShareCheck 查询并分析分享功能 ...")
-    share_check_query_path = os.path.join("codeql", "queries", "ShareCheck.ql")
-
-    share_check_results = query_runner.run(share_check_query_path)
-    logger.info("ShareCheck 查询返回 %d 条结果", len(share_check_results))
-
-    # 分析分享功能
-    share_checker = ShareChecker()
-    share_info = share_checker.analyze(share_check_results)
-
-    # 保存分享功能分析结果
-    share_output = os.path.join(args.output, "share_info.json")
-    save_json(share_info, share_output)
-    logger.info("分享功能分析已保存: %s", share_output)
-
-    # 增强漏洞链分析：同时标记目标页面是否可分享
-    cprf_vulnerable_chains = []
-    for chain in vulnerable_chains:
-        route_target = chain.get("route_target")
-        if route_target:
-            is_shareable = share_checker.is_page_shareable(route_target)
-            share_config = share_checker.get_page_share_info(route_target)
-
-            # 如果目标页面既缺少用户验证，又支持分享，则为高风险 CPRF 漏洞
-            if is_shareable:
-                cprf_chain = chain.copy()
-                cprf_chain["target_shareable"] = True
-                cprf_chain["share_title"] = share_config.get("share_title")
-                cprf_chain["share_path"] = share_config.get("share_path")
-                cprf_chain["cprf_risk"] = "high"  # 高风险：可分享 + 无用户验证
-                cprf_vulnerable_chains.append(cprf_chain)
-
-    logger.info(
-        "发现 %d 条高风险 CPRF 触发链（目标页面可分享且缺少用户验证）",
-        len(cprf_vulnerable_chains)
-    )
-
-    # 保存高风险 CPRF 漏洞链
-    cprf_output = os.path.join(args.output, "cprf_vulnerable_chains.json")
-    save_json(cprf_vulnerable_chains, cprf_output)
-    logger.info("高风险 CPRF 漏洞链已保存: %s", cprf_output)
-
-    # 输出分享功能统计信息
-    share_stats = share_checker.get_statistics()
-    logger.info("分享功能统计: %s", share_stats)
-
-    # ------------------------------------------------------------------ #
-    # Step 9: 攻击路径构建                                               #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 9] 构建完整攻击路径 ...")
-
-    # 构建攻击路径
-    path_builder = AttackPathBuilder()
-    attack_paths = path_builder.build(trigger_chains, state_checks, share_info)
-
-    # 保存所有攻击路径
-    attack_paths_output = os.path.join(args.output, "attack_paths.json")
-    save_json(attack_paths, attack_paths_output)
-    logger.info("攻击路径已保存: %s", attack_paths_output)
-
-    # 保存漏洞路径（high + medium 风险）
-    vulnerable_paths = path_builder.get_vulnerable_paths()
-    vulnerable_paths_output = os.path.join(args.output, "vulnerable_attack_paths.json")
-    save_json(vulnerable_paths, vulnerable_paths_output)
-    logger.info("漏洞攻击路径已保存: %s", vulnerable_paths_output)
-
-    # 保存高风险 CPRF 路径
-    cprf_paths = path_builder.get_high_risk_paths()
-    cprf_paths_output = os.path.join(args.output, "cprf_attack_paths.json")
-    save_json(cprf_paths, cprf_paths_output)
-    logger.info("CPRF 攻击路径已保存: %s", cprf_paths_output)
-
-    # 输出攻击路径统计信息
-    path_stats = path_builder.get_statistics()
-    logger.info("攻击路径统计: %s", path_stats)
-
-    # 计算路由类型统计
-    route_types = {}
-    for r in routes:
-        rtype = r.get('type', 'unknown')
-        route_types[rtype] = route_types.get(rtype, 0) + 1
-
-    # ------------------------------------------------------------------ #
-    # Step 10: 生成检测报告                                              #
-    # ------------------------------------------------------------------ #
-    logger.info("[Step 10] 生成检测报告 ...")
-
-    # 生成 Markdown 检测报告
-    report_generator = ReportGenerator(args.output)
-    report_path = report_generator.generate(
-        miniapp_path=args.source,
-        page_count=len(pages),
-        routes=routes,
-        event_chains=event_chains,
-        trigger_chains=trigger_chains,
-        state_checks=state_checks,
-        share_info=share_info,
-        attack_paths=attack_paths,
-        vulnerable_paths=vulnerable_paths,
-        cprf_paths=cprf_paths,
-        route_stats=route_types,
-        state_stats=stats,
-        share_stats=share_stats,
-        path_stats=path_stats,
-    )
-
-    logger.info("检测报告已生成: %s", report_path)
-
-    # ------------------------------------------------------------------ #
-    # 所有步骤完成                                                       #
-    # ------------------------------------------------------------------ #
-    logger.info("=== Step 1-10 全部完成 ===")
-
-    print(f"\n{'='*60}")
-    print(f"{'MiniCAT Detector 检测完成':^60}")
-    print(f"{'='*60}")
-    print(f"\n输出文件:")
-    print(f"  - 页面索引: {index_output}")
-    print(f"  - CodeQL 数据库: {db_dir}")
-    print(f"  - 路由分析: {routes_output}")
-    print(f"  - 事件链: {events_output}")
-    print(f"  - 触发链: {triggers_output}")
-    print(f"  - 用户状态检查: {state_output}")
-    print(f"  - 分享功能: {share_output}")
-    print(f"  - 攻击路径: {attack_paths_output}")
-    print(f"  - 漏洞路径: {vulnerable_paths_output}")
-    print(f"  - CPRF 路径: {cprf_paths_output}")
-    print(f"  - [报告] 检测报告: {report_path}")
-
-    html_count = sum(1 for v in page_index.values() if v.get('html'))
-    print(f"\n检测统计:")
-    print(f"  - 发现 {len(pages)} 个页面，HTML 已转换 {html_count} 个")
-    print(f"  - 发现 {len(routes)} 条路由 API 调用")
-    print(f"  - 恢复 {len(event_chains)} 条事件链")
-    print(f"  - 识别 {len(trigger_chains)} 条用户触发链")
-    print(f"  - 构建 {len(attack_paths)} 条完整攻击路径")
-    print(f"  - 发现 {len(state_checks)} 个页面有用户状态检查")
-
-    print(f"\n漏洞发现:")
-    print(f"  - [HIGH] 高风险 CPRF 漏洞: {len(cprf_paths)} 条")
-    print(f"  - [MEDIUM] 中风险漏洞: {len(vulnerable_paths) - len(cprf_paths)} 条")
-    print(f"  - [总计] 总漏洞路径: {len(vulnerable_paths)} 条")
-
-    print(f"\n路由类型分布:")
-    for rtype, count in sorted(route_types.items()):
-        print(f"  - {rtype}: {count}")
-
-    if stats:
-        print(f"\n用户状态检查统计:")
-        print(f"  - 有状态检查的页面: {stats['total_pages_with_checks']}")
-        print(f"  - 总检查次数: {stats['total_checks']}")
-        if stats.get('check_type_distribution'):
-            print(f"  - 检查类型分布:")
-            for check_type, count in sorted(stats['check_type_distribution'].items()):
-                print(f"    * {check_type}: {count}")
-
-    if share_stats:
-        print(f"\n分享功能统计:")
-        print(f"  - 总页面数: {share_stats['total_pages']}")
-        print(f"  - 可分享页面: {share_stats['shareable_pages']}")
-        print(f"  - 不可分享页面: {share_stats['non_shareable_pages']}")
-        print(f"  - 自定义分享配置: {share_stats['custom_share_config']}")
-
-    if path_stats:
-        print(f"\n攻击路径统计:")
-        print(f"  - 总攻击路径: {path_stats['total_attack_paths']}")
-        print(f"  - 漏洞路径: {path_stats['vulnerable_paths']}")
-        print(f"  - 高风险 CPRF: {path_stats['high_risk_cprf']}")
-        if path_stats.get('risk_distribution'):
-            print(f"  - 风险分布:")
-            for risk_level, count in sorted(path_stats['risk_distribution'].items()):
-                print(f"    * {risk_level}: {count}")
-
-    print(f"\n{'='*60}")
-    print(f"检测完成! 详细报告请查看: {report_path}")
-    print(f"{'='*60}\n")
+    sys.exit(0 if success else 1)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

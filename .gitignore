@@ -17,6 +17,8 @@ env/
 # Output files
 output/
 output_test/
+unpacked/
+batch_output/
 *.log
 
 # CodeQL

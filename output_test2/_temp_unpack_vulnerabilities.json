@@ -1,0 +1,18 @@
+[
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/minicat_findings_100_20260815/packages/wx063d504170b0eb1c/_temp_unpack/c.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/minicat_findings_100_20260815/packages/wx063d504170b0eb1c/_temp_unpack/c.js|5337:18:5337:18",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/minicat_findings_100_20260815/packages/wx063d504170b0eb1c/_temp_unpack/c.js|5335:19:5335:27",
+    "function": "GYYO",
+    "block": "var t = ... ata[e];",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/minicat_findings_100_20260815/packages/wx063d504170b0eb1c/_temp_unpack/c.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/minicat_findings_100_20260815/packages/wx063d504170b0eb1c/_temp_unpack/c.js|8665:20:8665:31",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/minicat_findings_100_20260815/packages/wx063d504170b0eb1c/_temp_unpack/c.js|8665:26:8665:31",
+    "function": "k",
+    "block": "guard: e.path is true",
+    "has_share": true
+  }
+]

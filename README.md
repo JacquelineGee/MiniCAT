@@ -4,24 +4,24 @@
 
 ## 简介
 
-MiniCAT Detector 是基于论文 *MiniCAT: Cross-Page Request Forgery Detection in WeChat Mini-Programs* 的完整实现，用于自动检测微信小程序中的 CPRF（Cross-Page Request Forgery）漏洞。
+MiniCAT Detector 是基于论文 *MiniCAT: Cross-Page Request Forgery Detection in WeChat Mini-Programs* 的实现，使用 **CodeQL 污点追踪** 自动检测微信小程序中的 CPRF（Cross-Page Request Forgery）漏洞。
 
 CPRF 是一种针对微信小程序的攻击手法：攻击者构造恶意参数并通过分享链接传播，受害者点击后会在未验证身份的情况下执行敏感操作（如下单、转账、修改信息等）。
 
 ## 主要特性
 
-- ✅ **完整的 10 步检测流程**：从源码解析到漏洞报告生成
-- ✅ **CodeQL 静态分析**：基于抽象语法树和数据流分析
-- ✅ **WXML 转换**：支持将 WXML 转换为 HTML 以便分析
-- ✅ **事件链恢复**：反向污点分析恢复完整调用链
-- ✅ **风险等级评估**：high（CPRF）/ medium / low / info
-- ✅ **详细报告生成**：Markdown 格式，包含漏洞详情和修复建议
+- ✅ **污点追踪检测**：使用 CodeQL 追踪数据流从任意属性访问到路由 API
+- ✅ **适合混淆代码**：不依赖函数名或事件绑定，适用于混淆后的小程序
+- ✅ **可利用性验证**：检查页面是否有 `onShareAppMessage` 方法
+- ✅ **自动解包**：支持自动解包 .wxapkg 文件
+- ✅ **详细报告生成**：Markdown 格式，包含数据流和漏洞详情
 
 ## 系统要求
 
 - **Python** >= 3.10
 - **Node.js** >= 14.0
 - **CodeQL CLI** >= 2.15（需在 PATH 中可访问 `codeql` 命令）
+- **wedecode** - 微信小程序解包工具（需在 PATH 中可访问 `wedecode` 命令）
 
 ## 安装步骤
 
@@ -31,12 +31,16 @@ CPRF 是一种针对微信小程序的攻击手法：攻击者构造恶意参数
 pip install -r requirements.txt
 ```
 
-### 2. 安装 Node.js 依赖（用于 WXML 转换）
+### 2. 安装 wedecode（用于解包 .wxapkg 文件）
 
 ```bash
-cd transformer
-npm install
-cd ..
+npm install -g wedecode
+```
+
+验证安装：
+
+```bash
+wedecode --version
 ```
 
 ### 3. 安装 CodeQL CLI
@@ -54,32 +58,22 @@ codeql --version
 ### 基本用法
 
 ```bash
-python main.py --source <小程序源码目录> --output <输出目录>
-```
-
-### 完整参数
-
-```bash
-python main.py \
-  --source ../unpacked_test/wx1ebbcac475348f0b \
-  --output output_test \
-  --config config/config.yaml
+python main.py --source <小程序源码目录或.wxapkg文件目录> --output <输出目录>
 ```
 
 **参数说明：**
 
-- `--source`：小程序源码根目录（必须包含 app.json）
+- `--source`：小程序源码根目录（必须包含 app.json）或包含 .wxapkg 文件的目录
 - `--output`：输出目录（默认 `output/`）
-- `--config`：配置文件路径（默认 `config/config.yaml`）
 
 ### 示例
 
 ```bash
-# 检测示例小程序
-python main.py --source ../unpacked_test/wx1ebbcac475348f0b --output output_test
+# 检测已解包的小程序
+python main.py --source unpacked/wx063d504170b0eb1c --output output
 
-# 使用自定义配置
-python main.py --source /path/to/miniapp --output results --config my_config.yaml
+# 自动解包并检测（.wxapkg 文件在目录中）
+python main.py --source packages/wx063d504170b0eb1c --output output
 ```
 
 ## 输出结果
@@ -89,179 +83,151 @@ python main.py --source /path/to/miniapp --output results --config my_config.yam
 ### 核心报告
 
 - **`detection_report.md`** - 主检测报告（Markdown 格式）
-  - 📊 执行摘要
-  - 📈 检测结果统计
-  - 🔴 高风险 CPRF 漏洞列表
-  - 🟡 中风险漏洞列表
-  - 🔍 攻击路径详细示例
-  - 💡 修复建议
-  - 📝 附录
+  - 📊 小程序信息
+  - 📈 检测结果统计（数据流总数、可利用漏洞数）
+  - 🔴 漏洞列表（文件、函数、Source、Sink）
+  - 📊 函数分布和文件分布
 
 ### 详细数据（JSON 格式）
 
-- `page_index.json` - 页面索引（JS/WXML/HTML 路径）
-- `routes.json` - 所有路由 API 调用
-- `event_chains.json` - 事件处理函数调用链
-- `trigger_chains.json` - 用户触发链（WXML → Event → Route）
-- `user_state_checks.json` - 用户状态检查详情
-- `share_info.json` - 页面分享功能信息
-- `attack_paths.json` - 所有攻击路径
-- `vulnerable_attack_paths.json` - 所有漏洞攻击路径
-- `cprf_attack_paths.json` - 高风险 CPRF 攻击路径
+- `{app_id}_all_flows.json` - 所有检测到的数据流
+- `{app_id}_vulnerabilities.json` - 可利用的漏洞（有 onShareAppMessage）
+- `{app_id}_aux.csv` - CodeQL 查询结果（pure_get_func）
+- `{app_id}_main.csv` - CodeQL 查询结果（get_func）
+- `{app_id}_taint.bqrs` - CodeQL 原始查询结果
 
 ### 其他文件
 
-- `codeql-db/` - CodeQL 数据库
+- `{app_id}_db/` - CodeQL 数据库
 - `detector.log` - 检测日志
 
 ## 报告示例
 
 主报告 `detection_report.md` 包含以下内容：
 
-### 执行摘要
+### 检测结果
 
 ```markdown
-本次检测共扫描 **180** 个页面，识别出 **86** 个高风险 CPRF 漏洞和 **492** 个中风险漏洞。
+## 检测结果
 
-### 关键发现
+- **数据流总数**: 9
+- **可利用漏洞**: 2
 
-- 🔴 **高风险 CPRF 漏洞**: 86 个
-- 🟡 **中风险漏洞**: 492 个
-- 📍 **路由 API 调用**: 206 个
-- 🔗 **用户触发链**: 1038 个
+### 漏洞列表
+
+#### 漏洞 #1
+
+- **文件**: `c.js`
+- **函数**: `GYYO`
+- **Source**: `c.js|5335:19:5335:19`
+- **Sink**: `c.js|5337:18:5337:18`
+- **可分享**: ✓
+
+#### 漏洞 #2
+
+- **文件**: `c.js`
+- **函数**: `k`
+- **Source**: `c.js|8665:26:8665:31`
+- **Sink**: `c.js|8665:20:8665:20`
+- **可分享**: ✓
 ```
 
-### 高风险 CPRF 漏洞
+### 统计信息
 
 ```markdown
-### 1. pages/upage/upage
+## 统计信息
 
-- **目标页面**: `pages/upage/upage`
-- **路由 API**: `wx.switchTab`
-- **触发位置**: `pages/goods/goods.html` 中的 `<search>`
-- **风险等级**: 🔴 HIGH (CPRF)
+### 函数分布
 
-**漏洞描述**: 目标页面缺少用户身份验证且支持分享功能，攻击者可以构造恶意参数并通过分享传播。
+- `GYYO`: 1
+- `k`: 1
+- `JIO9`: 2
+- `S`: 1
+
+### 文件分布
+
+- `c.js`: 4
+- `components/showcase/components/navigation-bar/index.js`: 3
 ```
 
-### 攻击路径详细示例
+## 检测原理
 
-```markdown
-#### 攻击流程
+MiniCAT 使用 **CodeQL 污点追踪** 检测 CPRF 漏洞，核心步骤：
 
-1. 用户在 pages/goods/goods.html 页面中
-2. 点击/触发 <search> 元素的 addNum 事件
-3. 触发事件处理函数 close_search()
-4. 调用链: close_search → onShow → <anonymous>
-5. 执行路由 API: wx.switchTab()
-6. 跳转到目标页面: pages/upage/upage
-7. ⚠️ 目标页面未进行用户身份验证
-8. ⚠️ 目标页面支持分享（可通过分享传播）
+1. **重命名 WXML → HTML**：将 `.wxml` 文件重命名为 `.html`，帮助 CodeQL 发现关联的 JavaScript 文件
+2. **创建 CodeQL 数据库**：为小程序源码创建 JavaScript 分析数据库
+3. **污点追踪查询**：追踪数据流从任意属性访问（Source）到路由 API 的 URL 参数（Sink）
+4. **可利用性验证**：检查包含数据流的文件是否有 `onShareAppMessage` 方法
+
+### 污点追踪配置
+
+```ql
+class MiniCAT extends TaintTracking::Configuration {
+  override predicate isSource(DataFlow::Node source) {
+    // Source: 任意对象属性访问或点表达式
+    exists(ObjectExpr pa | pa.flow().getALocalSource().(DataFlow::Node) = source)
+    or
+    exists(DotExpr pe | pe.flow().getALocalSource().(DataFlow::Node) = source)
+  }
+
+  override predicate isSink(DataFlow::Node sink) {
+    // Sink: 路由 API 的 url 参数
+    wx_navi().getOptionArgument(0, "url").(DataFlow::Node) = sink
+  }
+}
 ```
 
-### 修复建议
-
-报告包含详细的修复建议和代码示例。
-
-## 检测流程
-
-MiniCAT Detector 实现了完整的 10 步检测流程：
-
-| 步骤 | 模块 | 功能 | 状态 |
-|------|------|------|------|
-| Step 1 | app.json 解析 + 页面索引 | 提取所有页面路径，建立 JS/WXML 索引 | ✅ 完成 |
-| Step 2 | WXML 转换 | 将 WXML 转换为 HTML（调用 Node.js transformer） | ✅ 完成 |
-| Step 3 | CodeQL 数据库创建 | 为小程序源码创建 JavaScript 数据库 | ✅ 完成 |
-| Step 4 | RouteAPI 查询 | 检测所有路由 API 调用（wx.navigateTo 等） | ✅ 完成 |
-| Step 5 | Event Recovery | 反向污点分析恢复事件调用链 | ✅ 完成 |
-| Step 6 | WXML Trigger 查询 | 分析 WXML 中的用户触发器并关联事件链 | ✅ 完成 |
-| Step 7 | User State Check | 检测目标页面的用户状态验证 | ✅ 完成 |
-| Step 8 | Share Check | 检测目标页面的分享功能 | ✅ 完成 |
-| Step 9 | 攻击路径构建 | 构建完整攻击路径并评估风险等级 | ✅ 完成 |
-| Step 10 | 报告生成 | 生成 Markdown 格式的检测报告 | ✅ 完成 |
-
-## 风险等级
-
-MiniCAT Detector 将检测到的攻击路径分为 4 个风险等级：
-
-| 风险等级 | 条件 | 说明 |
-|----------|------|------|
-| 🔴 **HIGH** | 缺少用户验证 + 支持分享 | 典型的 CPRF 漏洞，可通过分享链接传播 |
-| 🟡 **MEDIUM** | 缺少用户验证 + 不支持分享 | 虽然无法通过分享传播，但仍可能通过其他方式诱导用户访问 |
-| 🟢 **LOW** | 有用户验证 + 支持分享 | 虽然支持分享，但由于有用户验证，攻击者无法在未授权情况下执行敏感操作 |
-| ℹ️ **INFO** | 有用户验证 + 不支持分享 | 安全的配置 |
+这种方法的优势：
+- **不依赖函数名**：即使函数名被混淆（如 `GYYO`, `k`, `JIO9`），仍能检测数据流
+- **不依赖事件绑定**：不需要从 HTML 触发器追踪到处理函数
+- **适合混淆代码**：纯 JavaScript 数据流分析，不受混淆影响
 
 ## 目录结构
 
 ```
 MiniCAT/
-├── main.py                          # 主入口
+├── main.py                          # 主入口（集成污点追踪检测）
 ├── requirements.txt                 # Python 依赖
 ├── README.md                        # 本文档
 ├── config/
 │   └── config.yaml                  # 全局配置
-├── preprocessing/                   # 预处理模块
-│   ├── app_parser.py                # 解析 app.json
-│   ├── page_index.py                # 建立页面索引
-│   └── wxml_converter.py            # WXML → HTML 转换
+├── unpacker/                        # 解包模块
+│   ├── __init__.py
+│   └── wxapkg_unpacker.py           # wxapkg 解包器（调用 wedecode）
 ├── codeql/                          # CodeQL 模块
-│   ├── database.py                  # 数据库管理
-│   ├── run_query.py                 # 查询执行
 │   └── queries/                     # CodeQL 查询
-│       ├── RouteAPI.ql              # 路由 API 检测
-│       ├── CallGraph.ql             # 调用图
-│       ├── WXMLTrigger.ql           # WXML 触发器
-│       ├── UserState.ql             # 用户状态检查
-│       └── ShareCheck.ql            # 分享功能检查
-├── analyzer/                        # 分析器模块
-│   ├── route_analyzer.py            # 路由分析
-│   ├── event_recovery.py            # 事件链恢复
-│   ├── trigger_linker.py            # 触发链关联
-│   ├── state_checker.py             # 状态检查分析
-│   ├── share_checker.py             # 分享功能分析
-│   ├── attack_path_builder.py       # 攻击路径构建
-│   └── report_generator.py          # 报告生成
-├── transformer/                     # WXML 转换器
-│   ├── convert.js                   # Node.js 转换脚本
-│   └── package.json                 # npm 依赖
+│       ├── MiniCATTaint.ql          # 污点追踪查询（核心）
+│       └── qlpack.yml               # CodeQL 包配置
 └── output/                          # 输出目录（可配置）
     ├── detection_report.md          # 主报告
-    ├── *.json                       # 详细数据
-    ├── codeql-db/                   # CodeQL 数据库
+    ├── *_all_flows.json             # 所有数据流
+    ├── *_vulnerabilities.json       # 可利用漏洞
+    ├── *_db/                        # CodeQL 数据库
     └── detector.log                 # 日志
 ```
 
 ## 技术架构
 
-### CodeQL 查询
+### CodeQL 污点追踪
 
-MiniCAT 使用 5 个 CodeQL 查询来分析小程序源码：
+MiniCAT 使用一个核心 CodeQL 查询 `MiniCATTaint.ql` 来检测数据流：
 
-1. **RouteAPI.ql** - 检测所有路由 API 调用（wx.navigateTo, wx.redirectTo, wx.switchTab, wx.reLaunch, wx.navigateBack）
-2. **CallGraph.ql** - 构建函数调用图，用于事件链恢复
-3. **WXMLTrigger.ql** - 分析 HTML（转换后的 WXML）中的事件绑定
-4. **UserState.ql** - 检测用户状态检查（wx.getStorageSync, wx.getStorage, app.globalData）
-5. **ShareCheck.ql** - 检测分享功能（onShareAppMessage, onShareTimeline）
+**Source（污点源）**：
+- 对象表达式（`ObjectExpr`）
+- 点表达式（`DotExpr`）
 
-### 事件链恢复
+**Sink（污点汇）**：
+- 路由 API 的 `url` 参数：`wx.navigateTo()`, `wx.redirectTo()`, `wx.reLaunch()`, `wx.switchTab()`, `wx.navigateBack()`
 
-使用反向污点分析（Reverse Taint Analysis）从路由 API 调用回溯到：
-- 包含该调用的事件处理函数
-- 完整的函数调用链
-- WXML 中触发该事件的用户交互元素
+**输出**：
+- `pure_get_func`：包含函数名的数据流（更准确）
+- `get_func`：不包含函数名的数据流（回退）
 
-### 攻击路径构建
+### 可利用性验证
 
-整合所有分析结果，构建完整的攻击路径：
-
-```
-User → WXML Trigger → Event Handler → Route API → Target Page
-                                                        ↓
-                                           User State Check? (Step 7)
-                                           Shareable? (Step 8)
-                                                        ↓
-                                              Risk Assessment (Step 9)
-```
+检测到数据流后，MiniCAT 会验证该文件是否包含 `onShareAppMessage` 方法：
+- ✓ 有分享功能：漏洞可通过分享链接传播（HIGH 风险）
+- ✗ 无分享功能：仍是潜在漏洞，但传播途径有限
 
 ## 常见问题
 
@@ -275,6 +241,14 @@ User → WXML Trigger → Event Handler → Route API → Target Page
 1. CodeQL CLI 已正确安装并在 PATH 中
 2. 小程序源码目录包含 app.json
 3. 有足够的磁盘空间（数据库通常需要几百 MB）
+
+### Q: 解包失败？
+
+**A:** 确保：
+1. wedecode 已正确安装：`npm install -g wedecode`
+2. wedecode 版本 >= 0.10.0
+3. .wxapkg 文件未损坏
+4. 有足够的磁盘空间
 
 ### Q: WXML 转换失败？
 

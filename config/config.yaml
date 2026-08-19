@@ -16,6 +16,10 @@ transformer:
   script_path: "transformer/convert.js"  # WXML转换脚本路径
   node_path: "node"  # Node.js路径
 
+# 解包器配置
+unpacker:
+  wedecode_cmd: "wedecode"  # wedecode命令路径，默认使用系统PATH中的wedecode
+
 # 输出配置
 output:
   dir: "output"  # 输出目录
@@ -46,5 +50,5 @@ detection:
 
 # 日志配置
 logging:
-  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  level: "DEBUG"  # DEBUG, INFO, WARNING, ERROR
   file: "output/detector.log"
