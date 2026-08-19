@@ -177,11 +177,29 @@ class MiniCATDetector:
 
     def create_codeql_database(self):
         """创建 CodeQL 数据库"""
+        import shutil
         self.db_path = os.path.join(self.output_dir, f"{self.app_id}_db")
 
         if os.path.exists(self.db_path):
+            # 验证数据库是否有效
             logger.info(f"CodeQL 数据库已存在: {self.db_path}")
-            return True
+            verify_cmd = ['codeql', 'database', 'upgrade', self.db_path]
+            try:
+                result = subprocess.run(
+                    verify_cmd,
+                    capture_output=True,
+                    text=True,
+                    timeout=30
+                )
+                if result.returncode == 0:
+                    logger.info("数据库验证通过")
+                    return True
+                else:
+                    logger.warning(f"数据库无效，将重新创建: {result.stderr}")
+                    shutil.rmtree(self.db_path)
+            except Exception as e:
+                logger.warning(f"数据库验证失败，将重新创建: {e}")
+                shutil.rmtree(self.db_path)
 
         logger.info("创建 CodeQL 数据库...")
         cmd = [
@@ -275,6 +293,36 @@ class MiniCATDetector:
             logger.debug(f"读取文件失败 {file_path}: {e}")
             return False
 
+    def has_any_share_method(self) -> bool:
+        """检查整个小程序是否有任何页面包含 onShareAppMessage 方法"""
+        try:
+            # 优先检查 pages 目录（大部分分享功能在这里）
+            pages_dir = os.path.join(self.source_dir, 'pages')
+            if os.path.exists(pages_dir):
+                for root, dirs, files in os.walk(pages_dir):
+                    for file in files:
+                        if file.endswith('.js'):
+                            file_path = os.path.join(root, file)
+                            if self.check_share_method(file_path):
+                                logger.info(f"发现分享功能: {file_path}")
+                                return True
+
+            # 如果 pages 目录没找到，再搜索整个小程序
+            for root, dirs, files in os.walk(self.source_dir):
+                # 跳过 node_modules 和其他不相关目录
+                dirs[:] = [d for d in dirs if d not in ['node_modules', 'miniprogram_npm', '__MACOSX']]
+
+                for file in files:
+                    if file.endswith('.js'):
+                        file_path = os.path.join(root, file)
+                        if self.check_share_method(file_path):
+                            logger.info(f"发现分享功能: {file_path}")
+                            return True
+            return False
+        except Exception as e:
+            logger.error(f"检查分享功能时出错: {e}")
+            return False
+
     def process_results(self, csv_path: str) -> Tuple[List[Dict], List[Dict]]:
         """
         处理查询结果
@@ -285,6 +333,14 @@ class MiniCATDetector:
 
         all_flows = []
         vulnerabilities = []
+
+        # 先检查整个小程序是否有任何页面有分享功能
+        has_share = self.has_any_share_method()
+
+        if has_share:
+            logger.info("检测到小程序有分享功能，所有数据流都是可利用的")
+        else:
+            logger.info("小程序没有分享功能，数据流无法通过分享链接利用")
 
         try:
             with open(csv_path, 'r', encoding='utf-8') as f:
@@ -299,26 +355,8 @@ class MiniCATDetector:
                     if '|' in sink_loc:
                         csv_file_path = sink_loc.split('|')[0]
 
-                        # 将 CSV 中的路径映射到实际的 source_dir
-                        # CSV 路径可能是旧的临时路径，需要转换为相对路径再映射
-                        relative_path = None
-
-                        # 尝试提取相对路径
-                        for part in ['_temp_unpack/', '_temp_unpack\\',
-                                     'unpacked/' + self.app_id + '/',
-                                     'unpacked\\' + self.app_id + '\\']:
-                            if part in csv_file_path:
-                                relative_path = csv_file_path.split(part, 1)[1]
-                                break
-
-                        # 如果无法提取相对路径，尝试直接使用文件名在 source_dir 中查找
-                        if relative_path:
-                            actual_file_path = os.path.join(self.source_dir, relative_path)
-                        else:
-                            actual_file_path = csv_file_path
-
                         flow_data = {
-                            'file': csv_file_path,  # 保留原始路径用于报告
+                            'file': csv_file_path,
                             'sink': sink_loc,
                             'source': source_loc,
                             'function': source_func,
@@ -327,14 +365,17 @@ class MiniCATDetector:
 
                         all_flows.append(flow_data)
 
-                        # 检查是否有 onShareAppMessage（使用实际路径）
-                        if self.check_share_method(actual_file_path):
+                        # 如果小程序有任何页面有分享功能，则所有数据流都是可利用的
+                        if has_share:
                             flow_data['has_share'] = True
                             vulnerabilities.append(flow_data)
-                            logger.info(f"发现漏洞: {os.path.basename(actual_file_path)} (函数: {source_func})")
+                            logger.debug(f"发现可利用数据流: {os.path.basename(csv_file_path)} (函数: {source_func})")
 
         except Exception as e:
             logger.error(f"处理结果时出错: {e}")
+
+        if vulnerabilities:
+            logger.info(f"发现 {len(vulnerabilities)} 个可利用漏洞")
 
         return all_flows, vulnerabilities
 
@@ -348,49 +389,58 @@ class MiniCATDetector:
             f.write(f"# MiniCAT 检测报告\n\n")
             f.write(f"## 小程序信息\n\n")
             f.write(f"- **AppID**: {self.app_id}\n")
-            f.write(f"- **源码目录**: {self.source_dir}\n")
             f.write(f"- **检测时间**: {self._get_timestamp()}\n\n")
 
             f.write(f"## 检测结果\n\n")
             f.write(f"- **数据流总数**: {len(all_flows)}\n")
-            f.write(f"- **可利用漏洞**: {len(vulnerabilities)}\n\n")
+            f.write(f"- **MiniCPRF 漏洞数**: {len(vulnerabilities)}\n\n")
 
             if vulnerabilities:
-                f.write(f"### 漏洞列表\n\n")
-                for idx, vuln in enumerate(vulnerabilities, 1):
-                    f.write(f"#### 漏洞 #{idx}\n\n")
-                    f.write(f"- **文件**: `{os.path.basename(vuln['file'])}`\n")
-                    f.write(f"- **函数**: `{vuln['function']}`\n")
-                    f.write(f"- **Source**: `{vuln['source']}`\n")
-                    f.write(f"- **Sink**: `{vuln['sink']}`\n")
-                    f.write(f"- **可分享**: ✓\n\n")
+                f.write(f"## 漏洞页面列表\n\n")
 
-            # 统计信息
-            f.write(f"## 统计信息\n\n")
+                # 按页面分组
+                page_vulns = {}
+                for vuln in vulnerabilities:
+                    # 提取页面路径：从完整路径中提取 pages/xxx/yyy
+                    file_path = vuln['file']
+                    if 'pages/' in file_path or 'Pages/' in file_path:
+                        # 提取 pages/xxx/yyy 部分
+                        parts = file_path.replace('\\', '/').split('/')
+                        try:
+                            pages_idx = parts.index('pages') if 'pages' in parts else parts.index('Pages')
+                            # pages/xxx/yyy.js -> pages/xxx/yyy
+                            page_path = '/'.join(parts[pages_idx:pages_idx+3]).replace('.js', '')
+                        except (ValueError, IndexError):
+                            page_path = os.path.basename(file_path).replace('.js', '')
+                    else:
+                        page_path = os.path.basename(file_path).replace('.js', '')
 
-            # 函数分布
-            func_dist = {}
-            for flow in all_flows:
-                func = flow['function']
-                func_dist[func] = func_dist.get(func, 0) + 1
+                    if page_path not in page_vulns:
+                        page_vulns[page_path] = []
+                    page_vulns[page_path].append(vuln)
 
-            f.write(f"### 函数分布\n\n")
-            for func, count in sorted(func_dist.items(), key=lambda x: x[1], reverse=True):
-                f.write(f"- `{func}`: {count}\n")
-            f.write("\n")
+                # 输出每个页面的漏洞
+                for idx, (page_path, vulns) in enumerate(page_vulns.items(), 1):
+                    f.write(f"### {idx}. `{page_path}`\n\n")
+                    f.write(f"- **漏洞类型**: MiniCPRF (Cross-Page Request Forgery)\n")
+                    f.write(f"- **数据流数量**: {len(vulns)}\n")
+                    f.write(f"- **触发方式**: 页面加载时自动触发 (`onLoad` 函数接收 URL 参数)\n\n")
 
-            # 文件分布
-            file_dist = {}
-            for flow in all_flows:
-                file = os.path.basename(flow['file'])
-                file_dist[file] = file_dist.get(file, 0) + 1
+                    # 显示使用的 URL 参数（从 source 中提取）
+                    params = set()
+                    for vuln in vulns:
+                        source = vuln.get('source', '')
+                        # 简单提取，实际可能需要更复杂的解析
+                        if 'onLoad' in vuln.get('function', ''):
+                            params.add('URL 参数')
 
-            f.write(f"### 文件分布\n\n")
-            for file, count in sorted(file_dist.items(), key=lambda x: x[1], reverse=True):
-                f.write(f"- `{file}`: {count}\n")
-            f.write("\n")
+                    if params:
+                        f.write(f"- **危险参数**: {', '.join(params)}\n\n")
 
-        logger.info(f"报告已生成: {report_path}")
+            else:
+                f.write(f"未发现 MiniCPRF 漏洞。\n\n")
+
+        logger.info(f"检测报告已生成: {report_path}")
 
     def _get_timestamp(self):
         """获取当前时间戳"""

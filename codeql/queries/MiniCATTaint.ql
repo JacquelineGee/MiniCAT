@@ -41,7 +41,7 @@ private DataFlow::InvokeNode wx_navi() {
 
 /**
  * MiniCAT taint tracking configuration
- * Source: any property access (ObjectExpr or DotExpr)
+ * Source: All property accesses (ObjectExpr, DotExpr)
  * Sink: URL parameter of WeChat route APIs
  */
 class MiniCAT extends TaintTracking::Configuration {

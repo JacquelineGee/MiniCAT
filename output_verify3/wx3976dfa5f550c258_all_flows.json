@@ -1,0 +1,226 @@
+[
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|7:14:7:74",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|7:24:7:36",
+    "function": "exports.scanQRCode",
+    "block": "entry node of functio ... )\\n    }",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|7:14:7:74",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|7:24:7:29",
+    "function": "exports.scanQRCode",
+    "block": "entry node of functio ... )\\n    }",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|7:14:7:74",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|22:34:22:41",
+    "function": "l",
+    "block": "guard: c.isNativeMp is true",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|7:14:7:74",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|22:45:22:55",
+    "function": "l",
+    "block": "guard: c.isNativeMp is false",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|48:10:48:10",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/order-list/model/AbstractPageViewModel.js|110:293:110:298",
+    "function": "(functi ...      })",
+    "block": "guard: y.isNativeMp is true",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|48:10:48:10",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/cart.js|253:275:253:276",
+    "function": "{\\n  ret ... )\\n  }\\n}",
+    "block": "(x.defa ... ), !e))",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|55:10:55:10",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/order-list/model/AbstractPageViewModel.js|110:293:110:298",
+    "function": "(functi ...      })",
+    "block": "guard: y.isNativeMp is true",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|55:10:55:10",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/cart.js|253:275:253:276",
+    "function": "{\\n  ret ... )\\n  }\\n}",
+    "block": "(x.defa ... ), !e))",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|76:14:76:14",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/order-list/model/AbstractPageViewModel.js|110:293:110:298",
+    "function": "(functi ...      })",
+    "block": "guard: y.isNativeMp is true",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|76:14:76:14",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/cart.js|253:275:253:276",
+    "function": "{\\n  ret ... )\\n  }\\n}",
+    "block": "(x.defa ... ), !e))",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|87:10:87:10",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/order-list/model/AbstractPageViewModel.js|110:293:110:298",
+    "function": "(functi ...      })",
+    "block": "guard: y.isNativeMp is true",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|87:10:87:10",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/cart.js|253:275:253:276",
+    "function": "{\\n  ret ... )\\n  }\\n}",
+    "block": "(x.defa ... ), !e))",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|556:20:556:20",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|541:67:541:75",
+    "function": "(functi ... t)\\n  })",
+    "block": "if (s = ...       }",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|556:20:556:20",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|541:82:541:91",
+    "function": "(functi ... t)\\n  })",
+    "block": "if (s = ...       }",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/saas-user-auth/index.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/saas-user-auth/index.js|1499:16:1499:87",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/saas-user-auth/index.js|1496:15:1496:21",
+    "function": "r.onLog ... sReload",
+    "block": "var t,  ... ptions;",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|181:30:181:30",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|178:37:178:42",
+    "function": "(functi ...      })",
+    "block": "(null = ... t = 13;",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|181:30:181:30",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|178:116:178:121",
+    "function": "(functi ...      })",
+    "block": "guard: null == T is false",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|181:30:181:30",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|178:127:178:128",
+    "function": "(functi ...      })",
+    "block": "{}",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|181:30:181:30",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|178:135:178:142",
+    "function": "(functi ...      })",
+    "block": "y = (nu ... ) || {}",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|142:14:142:14",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|36:113:36:115",
+    "function": "(functi ... \\n    })",
+    "block": "r.__lim ... n(u, i)",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|142:14:142:14",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|36:149:36:151",
+    "function": "(functi ... \\n    })",
+    "block": "i = voi ...  \"\" : n",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|142:14:142:14",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|36:185:36:187",
+    "function": "(functi ... \\n    })",
+    "block": "s = voi ...  \"\" : l",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|142:14:142:14",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|91:17:91:22",
+    "function": "(functi ... \\n    })",
+    "block": "o = a.s ... t = 14;",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/user/modules/index.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/user/modules/index.js|27:10:27:10",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/user/index.js|55:15:55:35",
+    "function": "onLoad",
+    "block": "entry node of functio ... )\\n    }",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/user/modules/index.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/user/modules/index.js|27:10:27:10",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/user/index.js|55:15:55:20",
+    "function": "onLoad",
+    "block": "entry node of functio ... )\\n    }",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js|130:20:130:20",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js|129:18:129:28",
+    "function": "(functi ... \\n    })",
+    "block": "(D = r. ... t = 12;",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js|130:20:130:20",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js|129:18:129:23",
+    "function": "(functi ... \\n    })",
+    "block": "(D = r. ... t = 12;",
+    "has_share": true
+  },
+  {
+    "file": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js",
+    "sink": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js|130:20:130:20",
+    "source": "D:/mine/dasanxia/夏令营/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js|129:158:129:165",
+    "function": "(functi ... \\n    })",
+    "block": "guard: v.isNativeMp is true",
+    "has_share": true
+  }
+]
