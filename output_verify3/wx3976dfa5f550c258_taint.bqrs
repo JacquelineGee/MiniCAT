@@ -1,697 +1,0 @@
-ÎmD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|7:14:7:74mD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|7:24:7:36#entry node of functio ... )\n    }cD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.jsumD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|7:24:7:29oD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|22:34:22:41guard: c.isNativeMp is truesuccessoD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|22:45:22:55guard: c.isNativeMp is falsetD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator-main.js|21:10:23:8uD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator-main.js|21:20:21:25$guard: t.default.isNativeMp is trueiD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator-main.jstoErrorTippD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|48:10:48:10nD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/jsBridge.js|12:64:15:7guard: u is falsescanQRCodepD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|93:78:93:83odD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.jsmixNavigateToByNameqD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|111:9:111:15e = arg ... 0] : {}wnD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/wx/util.js|12:44:12:45 guard: e[e.length - 1] is falsebD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/wx/util.jsnmD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/wx/util.js|12:49:15:3guard: e.length > 0 is falsepD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/wx/util.js|14:116:14:169#guard: t.defau ... sSync() is truepD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/wx/util.js|14:174:14:175{}nD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/wx/util.js|29:11:29:21#entry node of functio ... ) : t\n}getWxUrlParamnD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/wx/util.js|29:26:29:27guard: n().options is false‰D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/order-common/OrderCommonHelper.js|66:103:69:5guard: p.isNativeMp is true}D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/order-common/OrderCommonHelper.jsT~D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/cart.js|253:275:253:276(x.defa ... ), !e))nD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/cart.jsKpD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|55:10:55:10pD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|76:14:76:14pD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|87:10:87:10qD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|143:10:145:8rD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/lib/navigator.js|143:20:143:25$guard: a.default.isNativeMp is true D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@components/limo-menu/header-top-info/index.js|350:16:350:16 D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@components/limo-menu/header-top-info/index.js|347:15:347:37$guard: "back-l ... conType is false’D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@components/limo-menu/header-top-info/index.jsgoBackHome D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@components/limo-menu/header-top-info/index.js|348:47:348:54 D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@components/limo-menu/header-top-info/index.js|349:61:349:70#guard: (0, u.i ... xApp)() is true¢D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@components/limo-menu/header-top-info/index.js|349:102:349:119™D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@components/limo-menu/svip-entry/index.js|20:14:20:14™D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@components/limo-menu/svip-entry/index.js|18:15:18:41D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@components/limo-menu/svip-entry/index.jsjumpToSvipCardPage™D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@components/limo-menu/svip-entry/index.js|18:15:18:23D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|578:14:578:14D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|555:13:557:5#entry node of functio ... n e\n  }D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.jsltD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|638:48:638:52%guard: "string" == typeof t is falsehtD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|773:52:773:56navigateToD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|779:18:785:11d = voi ...  c && cD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|604:18:604:18D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|618:18:618:18D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|623:18:623:18D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|679:18:679:18D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|709:18:709:18D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|737:14:737:14D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|729:11:729:25s = voi ...  a && agtD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|773:63:773:71D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|740:14:740:14D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|755:12:755:12D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|758:12:758:12D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|817:22:817:22D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/rms-triangle-c/index.js|823:24:823:24•D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|476:18:476:18”D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|413:18:418:3guard: G[e] is false‡D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.jsV•D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|480:22:480:22•D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|556:20:556:20“D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|60:25:60:26guard: D[e] is falseI‘D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/saas-user-auth/index.js|1499:16:1499:87D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/saas-user-auth/index.js|1162:50:1165:5{\n      ... }\n    }D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/saas-user-auth/index.jsPD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/menu/dish/DishDataUtil.js|15:16:15:16D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/menu/dish/DishDataUtil.js|5:11:5:51#entry node of functio ... , !1)\n}uD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/menu/dish/DishDataUtil.jsverifyMemberLoginD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/menu/dish/DishDataUtil.js|5:56:5:57$guard: a.defau ... berInfo is false~D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/menu/dish/DishDataUtil.js|7:9:7:19e = a.d ... o || {}vD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/index/index.js|156:12:156:92vD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/index/index.js|156:22:156:27hD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/index/index.jsonShowuD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.js|790:16:790:16uD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.js|781:13:781:31#entry node of functio ...   }\n  }gD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.jshandleErrorClickuD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.js|781:13:781:21uD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.js|781:36:781:37$guard: this.data.errorInfo is falseuD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.js|783:11:783:23e = thi ... o || {}wD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.js|1199:12:1199:12wD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.js|1195:13:1195:41#entry node of functio ...  })\n  }handleAddNewAddressFnwD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.js|1195:13:1195:30wD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.js|1196:11:1196:48addressPageUrlwD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/menu/index.js|1196:27:1196:28guard: void 0 === e is truewD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|142:14:142:14wD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|109:16:109:17guard: e is falseiD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.jshandlePerceptionReswD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|110:11:110:16n = e || {}wD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|124:15:124:27var E = ...  || "";yD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|125:166:125:178#guard: E.inclu ... pe=12") is trueyD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|125:166:125:171{D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/user/modules/index.js|27:10:27:10D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/b/helpers/iterableToArrayLimit.js|8:83:8:89uD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/b/helpers/iterableToArrayLimit.js_iterableToArrayLimitD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/remote/decoration/coupon-item-standard/index.js|77:18:77:30D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/remote/decoration/coupon-item-standard/index.js|73:82:73:87#guard: 0 === ( ... i.code) is trueƒD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/remote/decoration/coupon-item-standard/index.jshandleChannelResponse{\n      ...       }’D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/remote/marketingCommon/member-card-assets/index.js|36:14:36:14’D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/remote/marketingCommon/member-card-assets/index.js|24:17:24:81#guard: e.curre ... ex >= 0 is true†D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/remote/marketingCommon/member-card-assets/index.js	navigate’D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/remote/marketingCommon/member-card-assets/index.js|24:17:24:46’D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/remote/marketingCommon/member-card-assets/index.js|24:17:24:31’D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/remote/marketingCommon/member-card-assets/index.js|39:16:39:16exports.scanQRCodel“D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/order-list/model/AbstractPageViewModel.js|110:293:110:298guard: y.isNativeMp is trueƒD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/order-list/model/AbstractPageViewModel.js(functi ...      }){\n  ret ... )\n  }\n}•D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|541:67:541:75if (s = ...       }(functi ... t)\n  })•D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/weapp-safety-request/index.js|541:82:541:91‘D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/miniprogram_npm/@mtfe/saas-user-auth/index.js|1496:15:1496:21var t,  ... ptions;r.onLog ... sReload„D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|181:30:181:30„D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|178:37:178:42(null = ... t = 13;vD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js†D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|178:116:178:121guard: null == T is false†D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|178:127:178:128†D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/modules/takeaway/takeawayHelper.js|178:135:178:142y = (nu ... ) || {}wD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|36:113:36:115r.__lim ... n(u, i)(functi ... \n    })wD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|36:149:36:151i = voi ...  "" : nwD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|36:185:36:187s = voi ...  "" : luD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/splash/index.js|91:17:91:22o = a.s ... t = 14;sD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/user/index.js|55:15:55:35gD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/user/index.jsonLoadsD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/pages/user/index.js|55:15:55:20€D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js|130:20:130:20€D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js|129:18:129:28(D = r. ... t = 12;rD:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js€D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js|129:18:129:23‚D:/mine/dasanxia/å¤ä»¤è¥/zhemin yang/minicat/MiniCat/unpacked/wx3976dfa5f550c258/store/asyncActions/takeaway.js|129:158:129:165guard: v.isNativeMp is trueŸ	get_funcx	sink_locssource_locsblock_nameeisource_funcs m…¹ˆøÚı-,à â…¹ˆøÚı-,à Ï¨¹ˆø¾ıÚ â©¹ˆøÑıÚîâÛÎˆø×ûäïß	´¹ˆøÍ
-ıß
-ïê
-´ñˆøÚÜ]@]@ÀïÔŞõˆøÅÜmmMÙïÛËÉŠøÉé'ËïÍÈÉŠøºé
-Ëï×ÎÉŠøÇé@oËïêŠÅŠøÚé®¯ËïİÉŠøËéîïü¥ÉŠøêéîï†éï¬ø¬B2B=©ï«”´¿ø©½ı]ÿ«­ß	´¹ˆøÍ
-ıß
-­ê
-´ñˆøÚÜ]@]@À­ÔŞõˆøÅÜmmMÙ­ÛËÉŠøÉé'Ë­ÍÈÉŠøºé
-Ë­×ÎÉŠøÇé@oË­êŠÅŠøÚé®¯Ë­İÉŠøËéî­ü¥ÉŠøêéî­†éï¬ø¬B2B=©­«”´¿ø©½ı]ÿ«ß	´¹ˆøÍ
-ıß
-ê
-´ñˆøÚÜ]@]@ÀÛËÉŠøÉé'ËÍÈÉŠøºé
-Ë×ÎÉŠøÇé@oËêŠÅŠøÚé®¯ËİÉŠøËéîü¥ÉŠøêéî†éï¬ø¬B2B=©«”´¿ø©½ı]ÿ«ß	´¹ˆøÍ
-ıß
-ê
-´ñˆøÚÜ]@]@ÀÛËÉŠøÉé'ËÍÈÉŠøºé
-Ë×ÎÉŠøÇé@oËêŠÅŠøÚé®¯ËİÉŠøËéîü¥ÉŠøêéî†éï¬ø¬B2B=©«”´¿ø©½ı]ÿ«ıîßúˆøàÜä„¥‚îøÆ ê ÖÖ-ı!„ˆ"‚îøÆ ê ÖÖ-ı!„©#‡îøÊ$ê İ	İ ı!„í$‡îøÊ$ê İ	İ ı!&ª'©µøÚÄ(Ò)&å)©µøÚÄ(Ò)ÿ*,‚¥¡ø-Á-ªªÃ.ÿ*Æ.ğ¢¡øÖ/Á-şşû/ÿ*ş/òŸ¡øÖ/Á-……1ÿ*™1Íèø©2Á-‰‰1½2,‚¥¡ø-Á-ªªÃ.½2Æ.ğ¢¡øÖ/Á-şşû/½2ş/òŸ¡øÖ/Á-……1½2™1Íèø©2Á-‰‰1Í3,‚¥¡ø-Á-ªªÃ.Í3Æ.ğ¢¡øÖ/Á-şşû/Í3ş/òŸ¡øÖ/Á-……1Í3™1Íèø©2Á-‰‰1İ4,‚¥¡ø-Á-ªªÃ.İ4Æ.ğ¢¡øÖ/Á-şşû/İ4ş/òŸ¡øÖ/Á-……1İ4™1Íèø©2Á-‰‰1í5,‚¥¡ø-Á-ªªÃ.í5Æ.ğ¢¡øÖ/Á-şşû/í5™1Íèø©2Á-‰‰1ı6,‚¥¡ø-Á-ªªÃ.ı6Æ.ğ¢¡øÖ/Á-şşû/ı6™1Íèø©2Á-‰‰189Šãø­:Á-ØØÁ:8ş/òŸ¡øÖ/Á-……18Ä:òŸ¡øÖ/Á-……1Ô;9Šãø­:Á-ØØÁ:Ô;ş/òŸ¡øÖ/Á-……1Ô;Ä:òŸ¡øÖ/Á-……1ä<9Šãø­:Á-ØØÁ:ä<ş/òŸ¡øÖ/Á-……1ä<Ä:òŸ¡øÖ/Á-……1ô=9Šãø­:Á-ØØÁ:ô=ş/òŸ¡øÖ/Á-……1ô=Ä:òŸ¡øÖ/Á-……1„?ş/òŸ¡øÖ/Á-……1”@ş/òŸ¡øÖ/Á-……1¤AºB©ÍøÏCäC
-ìDîDºB©ÍøÏCäC
-ìD„FšGµÒø®HäC<
-<ÃHÅH×IÒ øèJşJŠ	2	€L‚L„MÀ·©øƒN¦N‘›O‚L­Oà·©ø¬P¦N3›O‚LĞP¿©øÎQ¦N9›OâQØRßÙ²ø©ÎS››¶T½T²U”êµø§VÊVŒŒ±W½TÂW”êµø§VÊVŒŒ±W½T·X¸êµø¬YÊV±W½TĞYÄ¤µøÅZÊV	%±WÙZĞ[ÀİµøÇ\ÊVª	ª	ê\ÙZ€]ÀİµøÇ\ÊVª	ª	ê\ÙZ÷]»Õµøî^ÊV¬	#¬	0ê\ÙZı^œŞµøô_ÊV¬	¬	ê\`‡aÀµøşabmmùb`c£ù´ø„dbmmùb`d¼ü´ø‡eb||"ùb`›eæµø”fb}M}aùb`·fæµø”fb}M}aùb°g«h–ëøËªiSSŸjµjÅkÊ€¸øÕlølIINümµjµjŠã·ø’nølL3Nüm§nºošâ»øÍpğp,÷q§n€ršâ»øÍpğp,÷q§n“sšâ»øÍpğp,÷q¦tºošâ»øÍpğp,÷q¦t€ršâ»øÍpğp,÷q¦t“sšâ»øÍpğp,÷q¢pure_get_func	sink_locssource_locsblock_nameeisource_funcs m…¹ˆøÚı-,¹u â…¹ˆøÚı-,¹u Ï¨¹ˆø¾ıÌu â©¹ˆøÑıÌuïÎuŞ¼´øâvşvn–n¡‚xï«”´¿ø©½ı]ÿ–x­ÎuŞ¼´øâvşvn–n¡‚x­«”´¿ø©½ı]ÿ–xÎuŞ¼´øâvşvn–n¡‚x«”´¿ø©½ı]ÿ–xÎuŞ¼´øâvşvn–n¡‚x«”´¿ø©½ı]ÿ–x„F­xóıøÃyäC ×y„FìyóıøÃyäC ×yÅH‚{×¡¡ø”|şJ×	Ù¨|¼|Á}®°øÆ~Ú~²º&‚x¼|ĞÙ¿°ø×€Ú~²_²g‚x¼|ñ€´®°øÚÚ~²²€‚x¼|ø§®°øÿ‚Ú~²Z²€‚x`“ƒƒí´øŠ„b$+4„`³„¼í´øª…b$v$„`¾…Õí´øµ†b$š$²„`É†ûõ´ø¾‡b[[D„°gÒ‡¼š¶øÚÅˆ6766¬‰°g³‰¼š¶øÚÅˆ6766¬‰¦Š§‹¤Œ¿ø¨Œ¼Œ†„¦Š®¤Œ¿ø¨Œ¼Œ†„¦Š¯˜®¿ø²¼ŒŠ•„‘–---
-run:
-  queries:
-   -
-    pack: minicat/detector#0
-    relativeQueryPath: MiniCATTaint.ql
-    relativeBqrsPath: minicat/detector/MiniCATTaint.bqrs
-    metadata:
-      name: MiniCAT Taint Tracking Query
-      description: Finds data flows from property access to WeChat route API URL parameters
-      kind: problem
-      problem.severity: warning
-      id: minicat-taint
-  extensionPacks: []
-  packs:
-    codeql/util#3:
-      name: codeql/util
-      version: 2.0.42
-      isLibrary: true
-      isExtensionPack: false
-      localPath: file:///D:/software/codeql/qlpacks/codeql/util/2.0.42/
-      localPackDefinitionFile: file:///D:/software/codeql/qlpacks/codeql/util/2.0.42/qlpack.yml
-      headSha: 44a68d3a47fcbcd6a6a76ec7d1c1b3a1a28b201e
-      runDataExtensions: []
-    codeql/javascript-all#1:
-      name: codeql/javascript-all
-      version: 2.9.0
-      isLibrary: true
-      isExtensionPack: false
-      localPath: file:///D:/software/codeql/qlpacks/codeql/javascript-all/2.9.0/
-      localPackDefinitionFile: file:///D:/software/codeql/qlpacks/codeql/javascript-all/2.9.0/qlpack.yml
-      headSha: 44a68d3a47fcbcd6a6a76ec7d1c1b3a1a28b201e
-      runDataExtensions: []
-    codeql/threat-models#2:
-      name: codeql/threat-models
-      version: 1.0.55
-      isLibrary: true
-      isExtensionPack: false
-      localPath: file:///D:/software/codeql/qlpacks/codeql/threat-models/1.0.55/
-      localPackDefinitionFile: file:///D:/software/codeql/qlpacks/codeql/threat-models/1.0.55/qlpack.yml
-      headSha: 44a68d3a47fcbcd6a6a76ec7d1c1b3a1a28b201e
-      runDataExtensions: []
-    minicat/detector#0:
-      name: minicat/detector
-      version: 1.0.0
-      isLibrary: false
-      isExtensionPack: false
-      localPath: file:///D:/mine/dasanxia/å¤ä»¤è¥/zhemin%20yang/minicat/MiniCat/codeql/queries/
-      localPackDefinitionFile: file:///D:/mine/dasanxia/å¤ä»¤è¥/zhemin%20yang/minicat/MiniCat/codeql/queries/qlpack.yml
-      headSha: dda8384c49ccfb476860f3a72edaaeee9ca33ea1
-      runDataExtensions:
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/anthropic.model.yml
-        index: 0
-        firstRowId: 0
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/anthropic.model.yml
-        index: 1
-        firstRowId: 1
-        rowCount: 7
-        locations:
-          lineNumbers: A=12+1*6
-          columnNumbers: A=9*7
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/apollo-server.model.yml
-        index: 0
-        firstRowId: 8
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/apollo-server.model.yml
-        index: 1
-        firstRowId: 9
-        rowCount: 2
-        locations:
-          lineNumbers: A=12+1
-          columnNumbers: A=9*2
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/apollo-server.model.yml
-        index: 2
-        firstRowId: 11
-        rowCount: 10
-        locations:
-          lineNumbers: A=19+1*9
-          columnNumbers: A=9*10
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/aws-sdk.model.yml
-        index: 0
-        firstRowId: 21
-        rowCount: 8
-        locations:
-          lineNumbers: A=6+1*7
-          columnNumbers: A=9*8
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/aws-sdk.model.yml
-        index: 1
-        firstRowId: 29
-        rowCount: 10
-        locations:
-          lineNumbers: A=18+1*9
-          columnNumbers: A=9*10
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/aws-sdk.model.yml
-        index: 2
-        firstRowId: 39
-        rowCount: 8
-        locations:
-          lineNumbers: A=32+1*7
-          columnNumbers: A=9*8
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/aws-sdk.model.yml
-        index: 3
-        firstRowId: 47
-        rowCount: 9
-        locations:
-          lineNumbers: A=44+1*8
-          columnNumbers: A=9*9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/axios.model.yml
-        index: 0
-        firstRowId: 56
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/axios.model.yml
-        index: 1
-        firstRowId: 57
-        rowCount: 1
-        locations:
-          lineNumbers: A=12
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/call-me-maybe.model.yml
-        index: 0
-        firstRowId: 58
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/cors.model.yml
-        index: 0
-        firstRowId: 59
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/default-threat-models-fixup.model.yml
-        index: 0
-        firstRowId: 60
-        rowCount: 1
-        locations:
-          lineNumbers: A=8
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/google-genai.model.yml
-        index: 0
-        firstRowId: 61
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/google-genai.model.yml
-        index: 1
-        firstRowId: 62
-        rowCount: 13
-        locations:
-          lineNumbers: A=12+1*12
-          columnNumbers: A=9*13
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/graph-ql.model.yml
-        index: 0
-        firstRowId: 75
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/graph-ql.model.yml
-        index: 1
-        firstRowId: 76
-        rowCount: 1
-        locations:
-          lineNumbers: A=11
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/hana-db-client.model.yml
-        index: 0
-        firstRowId: 77
-        rowCount: 4
-        locations:
-          lineNumbers: A=6+1*3
-          columnNumbers: A=9*4
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/hana-db-client.model.yml
-        index: 1
-        firstRowId: 81
-        rowCount: 2
-        locations:
-          lineNumbers: A=15+1
-          columnNumbers: A=9*2
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/hana-db-client.model.yml
-        index: 2
-        firstRowId: 83
-        rowCount: 6
-        locations:
-          lineNumbers: A=22+1*5
-          columnNumbers: A=9*6
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/langchain.model.yml
-        index: 0
-        firstRowId: 89
-        rowCount: 17
-        locations:
-          lineNumbers: A=6+1*16
-          columnNumbers: A=9*17
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/langchain.model.yml
-        index: 1
-        firstRowId: 106
-        rowCount: 21
-        locations:
-          lineNumbers: A=28+1*20
-          columnNumbers: A=9*21
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/make-dir.model.yml
-        index: 0
-        firstRowId: 127
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/markdown-table.model.yml
-        index: 0
-        firstRowId: 128
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/mkdirp.model.yml
-        index: 0
-        firstRowId: 129
-        rowCount: 2
-        locations:
-          lineNumbers: A=6+1
-          columnNumbers: A=9*2
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/open.model.yml
-        index: 0
-        firstRowId: 131
-        rowCount: 2
-        locations:
-          lineNumbers: A=6+1
-          columnNumbers: A=9*2
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/openai.model.yml
-        index: 0
-        firstRowId: 133
-        rowCount: 3
-        locations:
-          lineNumbers: A=6+1*2
-          columnNumbers: A=9*3
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/openai.model.yml
-        index: 1
-        firstRowId: 136
-        rowCount: 16
-        locations:
-          lineNumbers: A=14+1*15
-          columnNumbers: A=9*16
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/openrouter.model.yml
-        index: 0
-        firstRowId: 152
-        rowCount: 3
-        locations:
-          lineNumbers: A=6+1*2
-          columnNumbers: A=9*3
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/openrouter.model.yml
-        index: 1
-        firstRowId: 155
-        rowCount: 6
-        locations:
-          lineNumbers: A=14+1*5
-          columnNumbers: A=9*6
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/react-relay-threat.model.yml
-        index: 0
-        firstRowId: 161
-        rowCount: 10
-        locations:
-          lineNumbers: A=6+1*9
-          columnNumbers: A=9*10
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/react.model.yml
-        index: 0
-        firstRowId: 171
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/rimraf.model.yml
-        index: 0
-        firstRowId: 172
-        rowCount: 3
-        locations:
-          lineNumbers: A=6+1*2
-          columnNumbers: A=9*3
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/shelljs.model.yml
-        index: 0
-        firstRowId: 175
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/tanstack.model.yml
-        index: 0
-        firstRowId: 176
-        rowCount: 6
-        locations:
-          lineNumbers: A=6+1*5
-          columnNumbers: A=9*6
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/underscore.string.model.yml
-        index: 0
-        firstRowId: 182
-        rowCount: 5
-        locations:
-          lineNumbers: A=6+1*4
-          columnNumbers: A=9*5
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/underscore.string.model.yml
-        index: 1
-        firstRowId: 187
-        rowCount: 20
-        locations:
-          lineNumbers: A=16+1*19
-          columnNumbers: A=9*20
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/vue.model.yml
-        index: 0
-        firstRowId: 207
-        rowCount: 3
-        locations:
-          lineNumbers: A=8+1*2
-          columnNumbers: A=9*3
-       -
-        pack: codeql/javascript-all#1
-        relativePath: ext/vue.model.yml
-        index: 1
-        firstRowId: 210
-        rowCount: 4
-        locations:
-          lineNumbers: A=16+2*3
-          columnNumbers: A=9*4
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/NoSQL.model.yml
-        index: 0
-        firstRowId: 214
-        rowCount: 4
-        locations:
-          lineNumbers: A=8+3+1*2
-          columnNumbers: A=9*4
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/NodeJSLib.model.yml
-        index: 0
-        firstRowId: 218
-        rowCount: 5
-        locations:
-          lineNumbers: A=6+1*4
-          columnNumbers: A=9*5
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/SQL.model.yml
-        index: 0
-        firstRowId: 223
-        rowCount: 5
-        locations:
-          lineNumbers: A=6+1*4
-          columnNumbers: A=9*5
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/SQL.model.yml
-        index: 1
-        firstRowId: 228
-        rowCount: 4
-        locations:
-          lineNumbers: A=16+1*3
-          columnNumbers: A=9*4
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/helmet/Helmet.Required.Setting.model.yml
-        index: 0
-        firstRowId: 232
-        rowCount: 2
-        locations:
-          lineNumbers: A=6+1
-          columnNumbers: A=9*2
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/minimongo/model.yml
-        index: 0
-        firstRowId: 234
-        rowCount: 75
-        locations:
-          lineNumbers: A=6+1*74
-          columnNumbers: A=9*75
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/mongodb/model.yml
-        index: 0
-        firstRowId: 309
-        rowCount: 26
-        locations:
-          lineNumbers: A=6+1*25
-          columnNumbers: A=9*26
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/mongodb/model.yml
-        index: 1
-        firstRowId: 335
-        rowCount: 611
-        locations:
-          lineNumbers: A=37+1*610
-          columnNumbers: A=9*611
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/mongodb/model.yml
-        index: 2
-        firstRowId: 946
-        rowCount: 32
-        locations:
-          lineNumbers: A=653+1*31
-          columnNumbers: A=9*32
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/mongodb/model.yml
-        index: 3
-        firstRowId: 978
-        rowCount: 102
-        locations:
-          lineNumbers: A=690+1*101
-          columnNumbers: A=9*102
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/mssql/model.yml
-        index: 0
-        firstRowId: 1080
-        rowCount: 34
-        locations:
-          lineNumbers: A=6+1*33
-          columnNumbers: A=9*34
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/mysql/model.yml
-        index: 0
-        firstRowId: 1114
-        rowCount: 57
-        locations:
-          lineNumbers: A=6+1*56
-          columnNumbers: A=9*57
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/mysql/model.yml
-        index: 1
-        firstRowId: 1171
-        rowCount: 3
-        locations:
-          lineNumbers: A=68+1*2
-          columnNumbers: A=9*3
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/pg/model.yml
-        index: 0
-        firstRowId: 1174
-        rowCount: 65
-        locations:
-          lineNumbers: A=6+1*64
-          columnNumbers: A=9*65
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/pg/model.yml
-        index: 1
-        firstRowId: 1239
-        rowCount: 5
-        locations:
-          lineNumbers: A=76+1*4
-          columnNumbers: A=9*5
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/pg/model.yml
-        index: 2
-        firstRowId: 1244
-        rowCount: 23
-        locations:
-          lineNumbers: A=86+1*22
-          columnNumbers: A=9*23
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/sequelize/model.yml
-        index: 0
-        firstRowId: 1267
-        rowCount: 7
-        locations:
-          lineNumbers: A=6+1*6
-          columnNumbers: A=9*7
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/sequelize/model.yml
-        index: 1
-        firstRowId: 1274
-        rowCount: 248
-        locations:
-          lineNumbers: A=18+1*247
-          columnNumbers: A=9*248
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/sequelize/model.yml
-        index: 2
-        firstRowId: 1522
-        rowCount: 5
-        locations:
-          lineNumbers: A=271+1*4
-          columnNumbers: A=9*5
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/sequelize/model.yml
-        index: 3
-        firstRowId: 1527
-        rowCount: 2
-        locations:
-          lineNumbers: A=281+1
-          columnNumbers: A=9*2
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/spanner/model.yml
-        index: 0
-        firstRowId: 1529
-        rowCount: 174
-        locations:
-          lineNumbers: A=6+1*173
-          columnNumbers: A=9*174
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/spanner/model.yml
-        index: 1
-        firstRowId: 1703
-        rowCount: 5
-        locations:
-          lineNumbers: A=185+1*4
-          columnNumbers: A=9*5
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/sqlite3/model.yml
-        index: 0
-        firstRowId: 1708
-        rowCount: 15
-        locations:
-          lineNumbers: A=6+1*14
-          columnNumbers: A=9*15
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/frameworks/sqlite3/model.yml
-        index: 1
-        firstRowId: 1723
-        rowCount: 3
-        locations:
-          lineNumbers: A=26+1*2
-          columnNumbers: A=9*3
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/security/domains/IntegrityCheckingRequired/integrity_checking_required.model.yml
-        index: 0
-        firstRowId: 1726
-        rowCount: 3
-        locations:
-          lineNumbers: A=6+1*2
-          columnNumbers: A=9*3
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/security/domains/compromised/compromised_domains.model.yml
-        index: 0
-        firstRowId: 1729
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/javascript-all#1
-        relativePath: semmle/javascript/security/domains/untrusted/untrusted_domains.model.yml
-        index: 0
-        firstRowId: 1730
-        rowCount: 6
-        locations:
-          lineNumbers: A=7+1+3+1*3
-          columnNumbers: A=9*6
-       -
-        pack: codeql/threat-models#2
-        relativePath: ext/supported-threat-models.model.yml
-        index: 0
-        firstRowId: 1736
-        rowCount: 1
-        locations:
-          lineNumbers: A=6
-          columnNumbers: A=9
-       -
-        pack: codeql/threat-models#2
-        relativePath: ext/threat-model-grouping.model.yml
-        index: 0
-        firstRowId: 1737
-        rowCount: 15
-        locations:
-          lineNumbers: A=8+3+1+3+1*5+3+1+5+1*3
-          columnNumbers: A=9*15
-metadata:
-  name: MiniCAT Taint Tracking Query
-  description: Finds data flows from property access to WeChat route API URL parameters
-  kind: problem
-  problem.severity: warning
-  id: minicat-taint
