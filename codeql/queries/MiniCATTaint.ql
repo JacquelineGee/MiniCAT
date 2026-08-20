@@ -28,8 +28,6 @@ string selectRoute() {
   result = "%.redirectTo"
   or result = "%.reLaunch"
   or result = "%.navigateTo"
-  or result = "%.switchTab"
-  or result = "%.navigateBack"
 }
 
 /**

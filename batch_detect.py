@@ -101,16 +101,16 @@ class BatchDetector:
 
                             # 终端显示结果
                             if vuln_count > 0:
-                                print(f"✓ 发现 {vuln_count} 个漏洞")
+                                print(f"OK 发现 {vuln_count} 个漏洞")
                             else:
-                                print(f"✓ 无漏洞")
+                                print(f"OK 无漏洞")
                     else:
                         results['details'].append({
                             'app_id': app_id,
                             'status': 'success',
                             'vulnerabilities': 0
                         })
-                        print(f"✓ 无漏洞")
+                        print(f"OK 无漏洞")
                 else:
                     results['failed'] += 1
                     results['details'].append({
@@ -118,7 +118,7 @@ class BatchDetector:
                         'status': 'failed',
                         'vulnerabilities': 0
                     })
-                    print(f"✗ 检测失败")
+                    print(f"FAIL 检测失败")
 
             except Exception as e:
                 logger.error(f"检测异常 [{app_id}]: {e}")
@@ -129,7 +129,7 @@ class BatchDetector:
                     'error': str(e),
                     'vulnerabilities': 0
                 })
-                print(f"✗ 异常")
+                print(f"ERROR 异常")
 
         # 保存批量结果
         self._save_summary(results)

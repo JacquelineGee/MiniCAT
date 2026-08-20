@@ -505,8 +505,20 @@ class MiniCATDetector:
         if not self.decode_bqrs(bqrs_path, main_csv, 'get_func'):
             return False
 
-        # Step 5: 处理结果 (使用 aux_csv,因为它的函数名更准确)
-        all_flows, vulnerabilities = self.process_results(aux_csv)
+        # Step 5: 处理结果 (优先使用 aux_csv，如果为空则使用 main_csv)
+        # 检查 aux_csv 是否有数据（除了标题行）
+        csv_to_use = aux_csv
+        try:
+            with open(aux_csv, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+                if len(lines) <= 1:  # 只有标题行或为空
+                    logger.warning("pure_get_func 结果为空，使用 get_func 结果")
+                    csv_to_use = main_csv
+        except Exception as e:
+            logger.warning(f"读取 aux_csv 失败: {e}，使用 main_csv")
+            csv_to_use = main_csv
+
+        all_flows, vulnerabilities = self.process_results(csv_to_use)
 
         # 保存 JSON 结果
         flows_file = os.path.join(self.output_dir, f"{self.app_id}_all_flows.json")
