@@ -96,10 +96,30 @@ class BatchDetector:
                             vuln_count = len(vulns)
                             results['vulnerabilities'] += vuln_count
 
+                            # 提取受影响页面和可分享性
+                            pages = set()
+                            has_share = False
+                            for v in vulns:
+                                if v.get('has_share'):
+                                    has_share = True
+                                file_path = v.get('file', '')
+                                if 'pages/' in file_path or 'Pages/' in file_path:
+                                    parts = file_path.replace('\\', '/').split('/')
+                                    try:
+                                        pages_idx = parts.index('pages') if 'pages' in parts else parts.index('Pages')
+                                        page_path = '/'.join(parts[pages_idx:pages_idx+3]).replace('.js', '')
+                                    except (ValueError, IndexError):
+                                        page_path = os.path.basename(file_path).replace('.js', '')
+                                else:
+                                    page_path = os.path.basename(file_path).replace('.js', '')
+                                pages.add(page_path)
+
                             results['details'].append({
                                 'app_id': app_id,
                                 'status': 'success',
-                                'vulnerabilities': vuln_count
+                                'vulnerabilities': vuln_count,
+                                'pages': sorted(list(pages)),
+                                'shareable': has_share
                             })
 
                             # 终端显示结果
@@ -161,15 +181,22 @@ class BatchDetector:
             f.write(f"发现 CPRF 漏洞的小程序数: {len(vuln_apps)}\n\n")
             f.write(f"漏洞总数: {results['vulnerabilities']}\n\n")
 
-            # 有漏洞的小程序列表（表格）
+            # 有漏洞的小程序列表
             if vuln_apps_sorted:
                 f.write(f"## 存在 CPRF 漏洞的小程序 ({len(vuln_apps_sorted)})\n\n")
-                f.write("| 序号 | 小程序 ID | 漏洞数量 | 详细报告 |\n")
-                f.write("|------|-----------|----------|----------|\n")
                 for idx, app in enumerate(vuln_apps_sorted, 1):
                     report_path = f"{app['app_id']}/detection_report.md"
-                    f.write(f"| {idx} | {app['app_id']} | {app['vulnerabilities']} | [查看报告]({report_path}) |\n")
-                f.write("\n")
+                    f.write(f"### {idx}. {app['app_id']}\n\n")
+                    f.write(f"漏洞数量: {app['vulnerabilities']}\n\n")
+                    shareable = app.get('shareable', True)
+                    f.write(f"可分享性: {'可分享' if shareable else '不可分享'}\n\n")
+                    pages = app.get('pages', [])
+                    if pages:
+                        f.write(f"受影响页面:\n\n")
+                        for page in pages:
+                            f.write(f"- {page}\n")
+                        f.write(f"\n")
+                    f.write(f"详细报告: [{app['app_id']}/detection_report.md]({report_path})\n\n")
 
             # 无漏洞的小程序统计
             safe_apps = [d for d in results['details'] if d.get('vulnerabilities', 0) == 0 and d['status'] == 'success']
@@ -181,12 +208,9 @@ class BatchDetector:
             failed_apps = [d for d in results['details'] if d['status'] in ['failed', 'error']]
             if failed_apps:
                 f.write(f"## 检测失败的小程序 ({len(failed_apps)})\n\n")
-                f.write("| 序号 | 小程序 ID | 错误信息 |\n")
-                f.write("|------|-----------|----------|\n")
                 for idx, app in enumerate(failed_apps, 1):
                     error_msg = app.get('error', '未知错误')
-                    f.write(f"| {idx} | {app['app_id']} | {error_msg} |\n")
-                f.write("\n")
+                    f.write(f"{idx}. {app['app_id']}: {error_msg}\n\n")
 
         # 终端显示汇总
         print("\n批量检测完成")

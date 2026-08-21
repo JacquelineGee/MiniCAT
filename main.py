@@ -431,15 +431,11 @@ class MiniCATDetector:
 
                     all_flows.append(flow_data)
 
-                    # 判断是否为漏洞：有分享功能 = 可利用
-                    if has_share:
-                        vulnerabilities.append(flow_data)
-                        logger.debug(f"发现漏洞: {os.path.basename(file_path)} - {source_func}")
+                    # 有数据流即为漏洞，分享功能仅影响风险等级
+                    vulnerabilities.append(flow_data)
 
         except Exception as e:
             logger.error(f"处理结果时出错: {e}")
-
-        logger.info(f"检测到 {len(all_flows)} 条数据流，其中 {len(vulnerabilities)} 个可利用漏洞")
 
         return all_flows, vulnerabilities
 
@@ -457,6 +453,11 @@ class MiniCATDetector:
             f.write(f"## 检测结果\n\n")
             f.write(f"数据流总数: {len(all_flows)}\n\n")
             f.write(f"MiniCPRF 漏洞数: {len(vulnerabilities)}\n\n")
+
+            # 整个小程序的可分享性
+            if vulnerabilities:
+                has_share = vulnerabilities[0].get('has_share', False)
+                f.write(f"可分享性: {'可分享' if has_share else '不可分享'}\n\n")
 
             if vulnerabilities:
                 f.write(f"## 漏洞详情\n\n")
@@ -501,8 +502,6 @@ class MiniCATDetector:
                         f.write(f"用户状态检查: 有完整检查\n\n")
                     else:
                         f.write(f"用户状态检查: 不完整或缺失\n\n")
-
-                    f.write(f"可分享性: 可分享\n\n")
 
                     # 详细数据流信息
                     f.write(f"#### 数据流详情\n\n")
