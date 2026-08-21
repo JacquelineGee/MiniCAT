@@ -12,12 +12,15 @@ from pathlib import Path
 from typing import List, Dict
 from main import MiniCATDetector
 
+# 确保logs目录存在
+os.makedirs('logs', exist_ok=True)
+
 # 配置日志 - 只记录到文件，不输出到终端
 logging.basicConfig(
     level=logging.WARNING,  # 终端只显示警告和错误
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('batch_detector.log', encoding='utf-8')
+        logging.FileHandler('logs/batch_detector.log', encoding='utf-8')
     ]
 )
 logger = logging.getLogger(__name__)
@@ -152,20 +155,20 @@ class BatchDetector:
             f.write("# MiniCAT 批量检测报告\n\n")
 
             f.write("## 检测汇总\n\n")
-            f.write(f"- **扫描小程序总数**: {results['total']}\n")
-            f.write(f"- **检测成功**: {results['success']}\n")
-            f.write(f"- **检测失败**: {results['failed']}\n")
-            f.write(f"- **发现 CPRF 漏洞的小程序数**: {len(vuln_apps)}\n")
-            f.write(f"- **漏洞总数**: {results['vulnerabilities']}\n\n")
+            f.write(f"扫描小程序总数: {results['total']}\n\n")
+            f.write(f"检测成功: {results['success']}\n\n")
+            f.write(f"检测失败: {results['failed']}\n\n")
+            f.write(f"发现 CPRF 漏洞的小程序数: {len(vuln_apps)}\n\n")
+            f.write(f"漏洞总数: {results['vulnerabilities']}\n\n")
 
             # 有漏洞的小程序列表（表格）
             if vuln_apps_sorted:
                 f.write(f"## 存在 CPRF 漏洞的小程序 ({len(vuln_apps_sorted)})\n\n")
-                f.write("| # | 小程序 ID | 漏洞数量 | 详细报告 |\n")
-                f.write("|---|-----------|----------|----------|\n")
+                f.write("| 序号 | 小程序 ID | 漏洞数量 | 详细报告 |\n")
+                f.write("|------|-----------|----------|----------|\n")
                 for idx, app in enumerate(vuln_apps_sorted, 1):
                     report_path = f"{app['app_id']}/detection_report.md"
-                    f.write(f"| {idx} | `{app['app_id']}` | {app['vulnerabilities']} | [查看报告]({report_path}) |\n")
+                    f.write(f"| {idx} | {app['app_id']} | {app['vulnerabilities']} | [查看报告]({report_path}) |\n")
                 f.write("\n")
 
             # 无漏洞的小程序统计
@@ -178,23 +181,20 @@ class BatchDetector:
             failed_apps = [d for d in results['details'] if d['status'] in ['failed', 'error']]
             if failed_apps:
                 f.write(f"## 检测失败的小程序 ({len(failed_apps)})\n\n")
-                f.write("| # | 小程序 ID | 错误信息 |\n")
-                f.write("|---|-----------|----------|\n")
+                f.write("| 序号 | 小程序 ID | 错误信息 |\n")
+                f.write("|------|-----------|----------|\n")
                 for idx, app in enumerate(failed_apps, 1):
                     error_msg = app.get('error', '未知错误')
-                    f.write(f"| {idx} | `{app['app_id']}` | {error_msg} |\n")
+                    f.write(f"| {idx} | {app['app_id']} | {error_msg} |\n")
                 f.write("\n")
 
         # 终端显示汇总
-        print("=" * 60)
-        print(f"\n批量检测完成！\n")
-        print(f"扫描小程序总数: {results['total']}")
-        print(f"检测成功: {results['success']}")
-        print(f"检测失败: {results['failed']}")
-        print(f"发现 CPRF 漏洞的小程序: {len(vuln_apps)} 个")
-        print(f"漏洞总数: {results['vulnerabilities']} 个")
-        print(f"\n详细报告: {report_file}")
-        print(f"汇总数据: {summary_file}\n")
+        print("\n批量检测完成")
+        print(f"扫描: {results['total']} 个")
+        print(f"成功: {results['success']} 个")
+        print(f"失败: {results['failed']} 个")
+        print(f"漏洞: {results['vulnerabilities']} 个")
+        print(f"报告: {report_file}\n")
 
 
 def main():

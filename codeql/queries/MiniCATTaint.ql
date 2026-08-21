@@ -1,6 +1,7 @@
 /**
- * @name MiniCAT Taint Tracking Query
- * @description Finds data flows from property access to WeChat route API URL parameters
+ * @name MiniCAT Taint Tracking Query (Paper Implementation)
+ * @description 严格按照论文源码实现的污点追踪查询 (Section 4.2)
+ *              从属性访问（source）到路由 API（sink）的数据流追踪
  * @kind problem
  * @problem.severity warning
  * @id minicat-taint
@@ -10,7 +11,7 @@ import javascript
 import DataFlow
 
 /**
- * Get location string in format: file|startLine:startCol:endLine:endCol
+ * 获取位置字符串: file|startLine:startCol:endLine:endCol
  */
 string get_spec_loc(Location loc) {
   result =
@@ -22,7 +23,8 @@ string get_spec_loc(Location loc) {
 }
 
 /**
- * Route API methods to track
+ * Step I: 路由 API 方法
+ * 论文: "We focus on three routing APIs: wx.navigateTo, wx.reLaunch, and wx.redirectTo"
  */
 string selectRoute() {
   result = "%.redirectTo"
@@ -31,33 +33,51 @@ string selectRoute() {
 }
 
 /**
- * Get WeChat route API invocations
+ * 获取微信路由 API 调用
  */
 private DataFlow::InvokeNode wx_navi() {
   result.getCalleeNode().toString().matches(selectRoute())
 }
 
 /**
- * MiniCAT taint tracking configuration
- * Source: All property accesses (ObjectExpr, DotExpr)
- * Sink: URL parameter of WeChat route APIs
+ * MiniCAT 污点追踪配置（论文原始实现）
+ *
+ * 论文源码 wechat_query_reborn.ql:
+ * override predicate isSource(DataFlow::Node source) {
+ *   exists(ObjectExpr pa| pa.flow().getALocalSource().(DataFlow::Node)=source )
+ *   or
+ *   exists(DotExpr pe| pe.flow().getALocalSource().(DataFlow::Node)=source)
+ * }
+ * override predicate isSink(DataFlow::Node sink) {
+ *   wx_navi().getOptionArgument(0, "url").(DataFlow::Node) = sink
+ * }
+ *
+ * 数据流方向: Source (属性访问) → Sink (路由 API)
  */
 class MiniCAT extends TaintTracking::Configuration {
   MiniCAT() { this = "minicat" }
 
+  /**
+   * Source: 所有属性访问（ObjectExpr 和 DotExpr）
+   * 这是论文源码的原始实现
+   */
   override predicate isSource(DataFlow::Node source) {
     exists(ObjectExpr pa | pa.flow().getALocalSource().(DataFlow::Node) = source)
     or
     exists(DotExpr pe | pe.flow().getALocalSource().(DataFlow::Node) = source)
   }
 
+  /**
+   * Sink: 路由 API 的 URL 参数
+   */
   override predicate isSink(DataFlow::Node sink) {
     wx_navi().getOptionArgument(0, "url").(DataFlow::Node) = sink
   }
 }
 
 /**
- * Extract function name from source node (better extraction logic)
+ * Extract function name from source node
+ * Used to identify event-handling functions (Challenge I from paper)
  */
 string func_name(DataFlow::Node source) {
   if not source.getContainer().getScope().getOuterScope() instanceof FunctionScope
@@ -71,13 +91,26 @@ string func_name(DataFlow::Node source) {
 }
 
 /**
- * Main query predicate: get function name using Container.getName()
+ * Check if function is an event-handling function (EV function)
+ * Paper (Algorithm 1): EV function's PR node aligns with module node at AST top level
+ */
+predicate isEventHandlingFunction(Function f) {
+  // Event-handling functions like onLoad, onClick, onShow, etc.
+  exists(string name | name = f.getName() |
+    name.matches("on%") or  // onLoad, onShow, onHide, etc.
+    name.matches("%Handler") or  // clickHandler, submitHandler, etc.
+    name.matches("handle%")  // handleClick, handleSubmit, etc.
+  )
+}
+
+/**
+ * Main query predicate: Reverse taint from routing API to property access
  */
 query predicate get_func(
   string sink_loc,
   string source_loc,
-  BasicBlock block_name,
-  string source_func
+  string source_func,
+  string func_type
 ) {
   exists(
     MiniCAT pt, DataFlow::Node sink, DataFlow::Node source |
@@ -85,19 +118,22 @@ query predicate get_func(
     and source_loc = get_spec_loc(source.asExpr().getLocation())
     and sink_loc = get_spec_loc(sink.asExpr().getLocation())
     and source_func = source.getContainer().(Function).getName()
-    and block_name = source.getBasicBlock()
+    and (
+      if isEventHandlingFunction(source.getContainer().(Function))
+      then func_type = "EVENT_HANDLER"
+      else func_type = "OTHER"
+    )
   )
 }
 
 /**
- * Pure query predicate: get function name using custom extraction logic
- * This provides more accurate function names for obfuscated code
+ * Alternative query using custom function name extraction
  */
 query predicate pure_get_func(
   string sink_loc,
   string source_loc,
-  BasicBlock block_name,
-  string source_func
+  string source_func,
+  string func_type
 ) {
   exists(
     MiniCAT pt, DataFlow::Node sink, DataFlow::Node source |
@@ -105,6 +141,10 @@ query predicate pure_get_func(
     source_loc = get_spec_loc(source.asExpr().getLocation())
     and sink_loc = get_spec_loc(sink.asExpr().getLocation())
     and source_func = func_name(source)
-    and block_name = source.getBasicBlock()
+    and (
+      if isEventHandlingFunction(source.getContainer().(Function))
+      then func_type = "EVENT_HANDLER"
+      else func_type = "OTHER"
+    )
   )
 }

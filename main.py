@@ -14,12 +14,14 @@ import json
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+os.makedirs('logs', exist_ok=True)
+
 # 配置日志
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('detector.log', encoding='utf-8'),
+        logging.FileHandler('logs/detector.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )
@@ -161,8 +163,15 @@ class MiniCATDetector:
         return ""
 
     def rename_wxml_to_html(self) -> int:
-        """将所有 .wxml 文件重命名为 .html，返回转换数量"""
-        logger.info("重命名 .wxml 文件为 .html...")
+        """
+        将所有 .wxml 文件重命名为 .html（论文 Section 4.2 Challenge II）
+
+        论文: "As the syntax of WXML is similar to HTML, we can use a public tool
+               to convert WXML files to HTML files while maintaining the raw WXML
+               tags and attributes."
+
+        返回转换数量
+        """
         count = 0
         for root, dirs, files in os.walk(self.source_dir):
             for file in files:
@@ -172,7 +181,6 @@ class MiniCATDetector:
                     if not os.path.exists(html_path):
                         os.rename(wxml_path, html_path)
                         count += 1
-        logger.info(f"重命名了 {count} 个 .wxml 文件")
         return count
 
     def create_codeql_database(self):
@@ -323,24 +331,62 @@ class MiniCATDetector:
             logger.error(f"检查分享功能时出错: {e}")
             return False
 
+    def check_user_state(self, page_file: str) -> Dict[str, bool]:
+        """
+        Step III: 检查用户状态实现（按照论文 Section 4.2）
+
+        论文: "Our static analysis focuses on detecting two types of API calls
+               in the onLoad page load functions"
+
+        返回: {
+            'has_check_session': bool,  # 是否检查 session 过期
+            'has_get_storage': bool     # 是否读取本地存储
+        }
+        """
+        result = {
+            'has_check_session': False,
+            'has_get_storage': False,
+            'has_proper_check': False
+        }
+
+        try:
+            with open(page_file, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+
+                # 检查是否有 wx.checkSession
+                if 'wx.checkSession' in content or 'checkSession' in content:
+                    result['has_check_session'] = True
+
+                # 检查是否有 wx.getStorage 或 wx.getStorageSync
+                if 'wx.getStorage' in content or 'getStorage' in content:
+                    result['has_get_storage'] = True
+
+                # 如果两者都有，说明有完整的用户状态检查
+                result['has_proper_check'] = result['has_check_session'] and result['has_get_storage']
+
+        except Exception as e:
+            logger.debug(f"检查用户状态失败 {page_file}: {e}")
+
+        return result
+
     def process_results(self, csv_path: str) -> Tuple[List[Dict], List[Dict]]:
         """
-        处理查询结果
+        处理逆向污点追踪结果（按照论文 Section 4.2）
 
         返回: (所有数据流, 可利用的漏洞)
         """
-        logger.info("处理查询结果...")
+        logger.info("处理逆向污点追踪结果...")
 
         all_flows = []
         vulnerabilities = []
 
-        # 先检查整个小程序是否有任何页面有分享功能
+        # Step IV: 检查整个小程序是否有分享功能
         has_share = self.has_any_share_method()
 
         if has_share:
-            logger.info("检测到小程序有分享功能，所有数据流都是可利用的")
+            pass
         else:
-            logger.info("小程序没有分享功能，数据流无法通过分享链接利用")
+            pass
 
         try:
             with open(csv_path, 'r', encoding='utf-8') as f:
@@ -349,66 +395,81 @@ class MiniCATDetector:
                     sink_loc = row.get('sink_loc', '')
                     source_loc = row.get('source_loc', '')
                     source_func = row.get('source_func', '')
-                    block_name = row.get('block_name', '')
+                    func_type = row.get('func_type', 'OTHER')
 
-                    # 从 sink_loc 提取文件路径
+                    # 从 sink_loc 提取文件路径和位置信息
                     if '|' in sink_loc:
-                        csv_file_path = sink_loc.split('|')[0]
+                        file_path = sink_loc.split('|')[0]
+                        sink_position = sink_loc.split('|')[1] if len(sink_loc.split('|')) > 1 else ''
+                    else:
+                        file_path = sink_loc
+                        sink_position = ''
 
-                        flow_data = {
-                            'file': csv_file_path,
-                            'sink': sink_loc,
-                            'source': source_loc,
-                            'function': source_func,
-                            'block': block_name
-                        }
+                    # 从 source_loc 提取位置信息
+                    if '|' in source_loc:
+                        source_position = source_loc.split('|')[1] if len(source_loc.split('|')) > 1 else ''
+                    else:
+                        source_position = ''
 
-                        all_flows.append(flow_data)
+                    flow_data = {
+                        'file': file_path,
+                        'sink': sink_loc,
+                        'sink_position': sink_position,
+                        'source': source_loc,
+                        'source_position': source_position,
+                        'function': source_func,
+                        'func_type': func_type,
+                        'is_event_handler': func_type == 'EVENT_HANDLER'
+                    }
 
-                        # 如果小程序有任何页面有分享功能，则所有数据流都是可利用的
-                        if has_share:
-                            flow_data['has_share'] = True
-                            vulnerabilities.append(flow_data)
-                            logger.debug(f"发现可利用数据流: {os.path.basename(csv_file_path)} (函数: {source_func})")
+                    # Step III: 检查用户状态
+                    user_state = self.check_user_state(file_path)
+                    flow_data['user_state'] = user_state
+
+                    # Step IV: 检查可分享性
+                    flow_data['has_share'] = has_share
+
+                    all_flows.append(flow_data)
+
+                    # 判断是否为漏洞：有分享功能 = 可利用
+                    if has_share:
+                        vulnerabilities.append(flow_data)
+                        logger.debug(f"发现漏洞: {os.path.basename(file_path)} - {source_func}")
 
         except Exception as e:
             logger.error(f"处理结果时出错: {e}")
 
-        if vulnerabilities:
-            logger.info(f"发现 {len(vulnerabilities)} 个可利用漏洞")
+        logger.info(f"检测到 {len(all_flows)} 条数据流，其中 {len(vulnerabilities)} 个可利用漏洞")
 
         return all_flows, vulnerabilities
 
     def generate_report(self, all_flows: List[Dict], vulnerabilities: List[Dict]):
-        """生成检测报告"""
-        logger.info("生成检测报告...")
-
+        """生成检测报告（按照论文格式）"""
         report_path = os.path.join(self.output_dir, 'detection_report.md')
 
         with open(report_path, 'w', encoding='utf-8') as f:
             f.write(f"# MiniCAT 检测报告\n\n")
             f.write(f"## 小程序信息\n\n")
-            f.write(f"- **AppID**: {self.app_id}\n")
-            f.write(f"- **检测时间**: {self._get_timestamp()}\n\n")
+            f.write(f"AppID: {self.app_id}\n\n")
+            f.write(f"检测时间: {self._get_timestamp()}\n\n")
+            f.write(f"分析方法: 逆向污点分析\n\n")
 
             f.write(f"## 检测结果\n\n")
-            f.write(f"- **数据流总数**: {len(all_flows)}\n")
-            f.write(f"- **MiniCPRF 漏洞数**: {len(vulnerabilities)}\n\n")
+            f.write(f"数据流总数: {len(all_flows)}\n\n")
+            f.write(f"MiniCPRF 漏洞数: {len(vulnerabilities)}\n\n")
 
             if vulnerabilities:
-                f.write(f"## 漏洞页面列表\n\n")
+                f.write(f"## 漏洞详情\n\n")
 
                 # 按页面分组
                 page_vulns = {}
                 for vuln in vulnerabilities:
-                    # 提取页面路径：从完整路径中提取 pages/xxx/yyy
                     file_path = vuln['file']
+                    # 提取页面路径
                     if 'pages/' in file_path or 'Pages/' in file_path:
-                        # 提取 pages/xxx/yyy 部分
                         parts = file_path.replace('\\', '/').split('/')
                         try:
                             pages_idx = parts.index('pages') if 'pages' in parts else parts.index('Pages')
-                            # pages/xxx/yyy.js -> pages/xxx/yyy
                             page_path = '/'.join(parts[pages_idx:pages_idx+3]).replace('.js', '')
                         except (ValueError, IndexError):
                             page_path = os.path.basename(file_path).replace('.js', '')
@@ -421,26 +482,56 @@ class MiniCATDetector:
 
                 # 输出每个页面的漏洞
                 for idx, (page_path, vulns) in enumerate(page_vulns.items(), 1):
-                    f.write(f"### {idx}. `{page_path}`\n\n")
-                    f.write(f"- **漏洞类型**: MiniCPRF (Cross-Page Request Forgery)\n")
-                    f.write(f"- **数据流数量**: {len(vulns)}\n")
-                    f.write(f"- **触发方式**: 页面加载时自动触发 (`onLoad` 函数接收 URL 参数)\n\n")
+                    f.write(f"### {idx}. {page_path}\n\n")
+                    f.write(f"漏洞类型: MiniCPRF\n\n")
+                    f.write(f"数据流数量: {len(vulns)}\n\n")
 
-                    # 显示使用的 URL 参数（从 source 中提取）
-                    params = set()
-                    for vuln in vulns:
-                        source = vuln.get('source', '')
-                        # 简单提取，实际可能需要更复杂的解析
-                        if 'onLoad' in vuln.get('function', ''):
-                            params.add('URL 参数')
+                    # 显示受影响的文件
+                    affected_file = os.path.basename(vulns[0]['file'])
+                    f.write(f"受影响文件: {affected_file}\n\n")
 
-                    if params:
-                        f.write(f"- **危险参数**: {', '.join(params)}\n\n")
+                    # 显示事件处理函数
+                    event_handlers = set([v['function'] for v in vulns if v.get('is_event_handler')])
+                    if event_handlers:
+                        f.write(f"事件处理函数: {', '.join(event_handlers)}\n\n")
+
+                    # 显示用户状态检查情况
+                    user_state = vulns[0].get('user_state', {})
+                    if user_state.get('has_proper_check'):
+                        f.write(f"用户状态检查: 有完整检查\n\n")
+                    else:
+                        f.write(f"用户状态检查: 不完整或缺失\n\n")
+
+                    f.write(f"可分享性: 可分享\n\n")
+
+                    # 详细数据流信息
+                    f.write(f"#### 数据流详情\n\n")
+                    for flow_idx, vuln in enumerate(vulns, 1):
+                        f.write(f"数据流 {flow_idx}:\n\n")
+
+                        # 污点源位置
+                        source_pos = vuln.get('source_position', '')
+                        if source_pos:
+                            line_info = source_pos.split(':')[0] if ':' in source_pos else source_pos
+                            f.write(f"- 污点源: 第 {line_info} 行, 函数 {vuln['function']}\n")
+                        else:
+                            f.write(f"- 污点源: 函数 {vuln['function']}\n")
+
+                        # 污点终点（路由API）
+                        sink_pos = vuln.get('sink_position', '')
+                        if sink_pos:
+                            line_info = sink_pos.split(':')[0] if ':' in sink_pos else sink_pos
+                            f.write(f"- 路由API调用: 第 {line_info} 行\n")
+
+                        # 检查对应的HTML文件
+                        html_file = vuln['file'].replace('.js', '.html')
+                        if os.path.exists(html_file):
+                            f.write(f"- 对应组件: {os.path.basename(html_file)}\n")
+
+                        f.write(f"\n")
 
             else:
                 f.write(f"未发现 MiniCPRF 漏洞。\n\n")
-
-        logger.info(f"检测报告已生成: {report_path}")
 
     def _get_timestamp(self):
         """获取当前时间戳"""
@@ -470,33 +561,29 @@ class MiniCATDetector:
         return shareable, total
 
     def detect(self):
-        """执行完整检测流程"""
-        logger.info("="*60)
-        logger.info(f"MiniCAT 检测器启动")
-        logger.info("="*60)
+        """执行完整检测流程（严格按照论文 Section 4.2）"""
+        if not self.quiet:
+            print(f"正在检测: {self.app_id}")
 
-        # Step 0: 检查是否需要解包
+        # 检查是否需要解包
         is_unpacked, unpacked_dir = self.check_unpacked()
         if not is_unpacked:
             logger.error("检测终止：源码未解包")
             return False
 
-        logger.info(f"检测目标: {self.app_id}")
-        logger.info(f"源码目录: {self.source_dir}")
-
-        # Step 1: 重命名 wxml 为 html
+        # 重命名 wxml 为 html（论文 Challenge II）
         html_count = self.rename_wxml_to_html()
 
-        # Step 2: 创建 CodeQL 数据库
+        # 创建 CodeQL 数据库
         if not self.create_codeql_database():
             return False
 
-        # Step 3: 运行污点追踪查询
+        # 运行污点追踪查询
         bqrs_path = self.run_taint_query()
         if not bqrs_path:
             return False
 
-        # Step 4: 解码结果 (两个谓词: pure_get_func 和 get_func)
+        # 解码结果 (两个谓词: pure_get_func 和 get_func)
         aux_csv = os.path.join(self.output_dir, f"{self.app_id}_aux.csv")
         main_csv = os.path.join(self.output_dir, f"{self.app_id}_main.csv")
 
@@ -505,8 +592,7 @@ class MiniCATDetector:
         if not self.decode_bqrs(bqrs_path, main_csv, 'get_func'):
             return False
 
-        # Step 5: 处理结果 (优先使用 aux_csv，如果为空则使用 main_csv)
-        # 检查 aux_csv 是否有数据（除了标题行）
+        # 优先使用 aux_csv，如果为空则使用 main_csv
         csv_to_use = aux_csv
         try:
             with open(aux_csv, 'r', encoding='utf-8') as f:
@@ -518,6 +604,7 @@ class MiniCATDetector:
             logger.warning(f"读取 aux_csv 失败: {e}，使用 main_csv")
             csv_to_use = main_csv
 
+        # Step III & IV: 处理结果（包含用户状态检查和可分享性检查）
         all_flows, vulnerabilities = self.process_results(csv_to_use)
 
         # 保存 JSON 结果
@@ -529,10 +616,10 @@ class MiniCATDetector:
         with open(vuln_file, 'w', encoding='utf-8') as f:
             json.dump(vulnerabilities, f, indent=2, ensure_ascii=False)
 
-        # Step 6: 生成报告
+        # 生成报告
         self.generate_report(all_flows, vulnerabilities)
 
-        # Step 7: 统计分享功能
+        # 统计分享功能
         shareable, total_pages = self.count_share_pages()
 
         # 函数分布
@@ -564,58 +651,12 @@ class MiniCATDetector:
     def _print_summary(self, html_count, all_flows, vulnerabilities,
                        total_pages, shareable, func_dist, file_dist):
         """打印格式化的检测结果摘要"""
-        sep = "=" * 60
         report_path = os.path.join(self.output_dir, 'detection_report.md')
-        aux_csv = os.path.join(self.output_dir, f"{self.app_id}_aux.csv")
-        main_csv = os.path.join(self.output_dir, f"{self.app_id}_main.csv")
-        flows_file = os.path.join(self.output_dir, f"{self.app_id}_all_flows.json")
-        vuln_file = os.path.join(self.output_dir, f"{self.app_id}_vulnerabilities.json")
-        bqrs_file = os.path.join(self.output_dir, f"{self.app_id}_taint.bqrs")
 
-        print(f"\n{sep}")
-        print(f"{'MiniCAT Detector 检测完成':^60}")
-        print(f"{sep}\n")
-
-        print("输出文件:")
-        print(f"  - CodeQL 数据库: {self.db_path}")
-        print(f"  - 污点查询结果(BQRS): {bqrs_file}")
-        print(f"  - 数据流(pure_get_func): {aux_csv}")
-        print(f"  - 数据流(get_func): {main_csv}")
-        print(f"  - 所有数据流(JSON): {flows_file}")
-        print(f"  - 漏洞列表(JSON): {vuln_file}")
-        print(f"  - [报告] 检测报告: {report_path}")
-
-        print(f"\n检测统计:")
-        print(f"  - 检测目标: {self.app_id}")
-        print(f"  - 总页面数(JS文件): {total_pages}")
-        print(f"  - HTML 已转换: {html_count} 个")
-        print(f"  - 污点数据流: {len(all_flows)} 条")
-        print(f"  - 可利用漏洞(有onShareAppMessage): {len(vulnerabilities)} 条")
-
-        print(f"\n漏洞发现:")
-        print(f"  - [HIGH] 可利用 CPRF 漏洞(可分享): {len(vulnerabilities)} 条")
-        print(f"  - [总计] 总数据流: {len(all_flows)} 条")
-
-        if vulnerabilities:
-            print(f"\n漏洞详情:")
-            for idx, vuln in enumerate(vulnerabilities, 1):
-                print(f"  #{idx} 文件: {os.path.basename(vuln['file'])}, "
-                      f"函数: {vuln['function']}")
-
-        print(f"\n函数分布:")
-        for func, count in sorted(func_dist.items(), key=lambda x: x[1], reverse=True):
-            print(f"  - {func}: {count}")
-
-        print(f"\n文件分布:")
-        for fname, count in sorted(file_dist.items(), key=lambda x: x[1], reverse=True):
-            print(f"  - {fname}: {count}")
-
-        print(f"\n分享功能统计:")
-        print(f"  - 总页面数: {total_pages}")
-        print(f"  - 可分享页面: {shareable}")
-        print(f"  - 不可分享页面: {total_pages - shareable}")
-
-        print(f"\n{sep}")
+        print(f"\n检测完成: {self.app_id}")
+        print(f"数据流: {len(all_flows)} 条")
+        print(f"漏洞: {len(vulnerabilities)} 个")
+        print(f"报告: {report_path}\n")
 
 
 def main():

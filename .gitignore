@@ -14,12 +14,16 @@ build/
 venv/
 env/
 
+# Logs
+logs/
+
 # Output files
 output/
 output_test/
+output_test*/
+output_final/
 unpacked/
 batch_output/
-*.log
 
 # CodeQL
 codeql-db/
